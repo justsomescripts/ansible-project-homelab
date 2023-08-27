@@ -1,27 +1,33 @@
+---
 proxmox:
   hosts:
     pve.host.dgries.de:
-      hosts_ssh_port: 1337
-      hosts_admin_user: david
 
 truenas:
   hosts:
     tns.host.dgries.de:
-      hosts_ssh_port: 1337
-      hosts_admin_user: david
 
 pihole:
   hosts:
     pi.host.dgries.de:
-      hosts_ssh_port: 1337
-      hosts_admin_user: david
 
 linux:
   children:
     pihole:
     truenas:
     proxmox:
-
+  vars:
+    hosts_time:
+      ntp_server: "192.168.178.3"
+    hosts_admin:
+      user: david
+      password: "{{ lookup('community.general.bitwarden', 'Proxmox VE david', field='password') }}"
+      groups:
+        - sudo
+        - users
+    hosts_ssh:
+      sshport: "1337"
+      sshkey: "{{ lookup('community.general.bitwarden', 'Proxmox VE david', field='SSH Public Key') }}"
 hardware:
   children:
     proxmox:
