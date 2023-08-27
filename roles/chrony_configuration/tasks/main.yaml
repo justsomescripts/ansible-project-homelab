@@ -2,6 +2,7 @@
 - name: Install Chrony
   ansible.builtin.package:
     name: chrony
+  become: true
 
 - name: Configure Chrony sources
   ansible.builtin.template:
@@ -10,3 +11,4 @@
     mode: "0644"
     owner: root
     group: root
+  become: true
