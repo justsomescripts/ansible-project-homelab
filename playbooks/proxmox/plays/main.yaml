@@ -29,7 +29,7 @@
           create: "{{ hosts_admin.create }}"
           groups: "{{ hosts_admin.groups }}"
         role_ssh:
-          sshkey: "{{ hosts_ssh.sshkey }}\n"
+          sshkey: "{{ hosts_ssh.sshkey }}"
           sshport: "{{ hosts_ssh.sshport }}"
           enable_pubkey_auth: "{{ hosts_ssh.enable_pubkey_auth }}"
           enable_agent_auth: "{{ hosts_ssh.enable_agent_auth }}"
@@ -54,6 +54,7 @@
       ansible.builtin.systemd_service:
         state: restarted
         name: chrony
+      become: true
       listen:
         - restart_chrony
 
@@ -61,5 +62,6 @@
       ansible.builtin.systemd_service:
         state: restarted
         name: sshd
+      become: true
       listen:
         - restart_sshd

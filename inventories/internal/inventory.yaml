@@ -37,7 +37,7 @@ linux:
         - users
     hosts_ssh:
       sshport: "1337"
-      sshkey: "{{ lookup('community.general.bitwarden', 'Proxmox VE david', field='SSH Public Key')[0] }}"
+      sshkey: "{{ lookup('community.general.bitwarden', 'Proxmox VE david', field='SSH Public Key')[0] }}\n"
       enable_pubkey_auth: true
       enable_password_auth: false
       enable_x_forward: false
