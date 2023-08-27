@@ -8,8 +8,8 @@
   remote_user: root
   become: false
   vars:
-    ansible_port: "{{ hosts_init.ansible_port }}"
-    ansible_ssh_pass: "{{ hosts_init.ansible_ssh_pass }}"
+    ansible_port: "{{ linux_init.ansible_port }}"
+    ansible_ssh_pass: "{{ linux_init.ansible_ssh_pass }}"
 
   tasks:
 

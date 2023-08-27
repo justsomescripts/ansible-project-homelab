@@ -19,10 +19,10 @@ linux:
   vars:
     ansible_port: "1337"
     ansible_become_pass: "{{ lookup('community.general.bitwarden', 'Proxmox VE david', field='password')[0] }}"
-    hosts_init:
+    linux_init:
       ansible_ssh_pass: "{{ lookup('community.general.bitwarden', 'Proxmox VE root', field='password')[0] }}"
       ansible_port: "22"
-    hosts_packages:
+    linux_packages:
       - vim
       - tmux
       - htop
