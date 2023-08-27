@@ -19,6 +19,9 @@
       ansible.builtin.import_role:
         name: ../../../roles/remote_user_configuration # noqa: role-name
       vars:
+        role_prompt:
+          enabled: "{{ hosts_prompt.enabled }}"
+          color_code: "{{ hosts_prompt.color_code }}"
         role_admin:
           user: "{{ hosts_admin.user }}"
           password: "{{ hosts_admin.password }}"

@@ -14,5 +14,5 @@ role_admin:
   create: false
 
 role_prompt:
-  enable: false
+  enabled: false
   color_code: "32"
