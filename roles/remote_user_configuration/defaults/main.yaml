@@ -12,3 +12,7 @@ role_admin:
   password: changeme
   update_password: on_create
   create: false
+
+role_prompt:
+  enable: false
+  color_code: "32"

@@ -13,6 +13,15 @@
     update_password: "{{ role_admin.update_password }}"
   when: role_admin.create | bool
 
+- name: Adjust prompt
+  ansible.builtin.template:
+    src: ../templates/bashrc.j2 # noqa no-relative-paths
+    dest: /home/{{ role_admin.user }}/.bashrc
+    owner: "{{ role_admin.user }}"
+    group: "{{ role_admin.user }}"
+    mode: "0644"
+  when: role_prompt.enable | bool
+
 - name: Configure SSH
   ansible.builtin.template:
     src: sshd_config.conf.j2

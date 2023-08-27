@@ -24,6 +24,9 @@ linux:
       - htop
     hosts_time:
       ntp_server: "192.168.178.3"
+    hosts_prompt:
+      enable: true
+      color_code: 33
     hosts_admin:
       user: david
       create: true
