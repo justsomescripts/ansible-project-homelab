@@ -1,4 +1,8 @@
 ---
+- name: Ensure sudo is installed
+  ansible.builtin.package:
+    name: sudo
+
 - name: Ensure admin user is present
   ansible.builtin.user:
     name: "{{ role_admin.user }}"

@@ -1,6 +1,6 @@
 ---
 role_ssh:
-  port: "22"
+  sshport: "22"
   enable_pubkey_auth: "yes"
   enable_password_auth: "no"
   enable_x_forward: "no"
