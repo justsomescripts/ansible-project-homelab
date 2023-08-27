@@ -1,0 +1,25 @@
+proxmox:
+  hosts:
+    pve.host.dgries.de:
+      hosts_ssh_port: 1337
+
+truenas:
+  hosts:
+    tns.host.dgries.de:
+      hosts_ssh_port: 1337
+
+pihole:
+  hosts:
+    pi.host.dgries.de:
+      hosts_ssh_port: 1337
+
+linux:
+  children:
+    pihole:
+    truenas:
+    proxmox:
+
+hardware:
+  children:
+    proxmox:
+    pihole:
