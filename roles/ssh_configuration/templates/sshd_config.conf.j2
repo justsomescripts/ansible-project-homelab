@@ -1,5 +1,5 @@
 Port {{ role_ssh.sshport }}
-PubkeyAuthentication {{ role_ssh.enable_pubkey_auth }}
-PasswordAuthentication {{ role_ssh.enable_password_auth }}
-X11Forwarding {{ role_ssh.enable_x_forward }}
+PubkeyAuthentication {{ 'yes' if role_ssh.enable_pubkey_auth | bool else 'no' }}
+PasswordAuthentication {{ 'yes' if role_ssh.enable_password_auth | bool else 'no' }}
+X11Forwarding {{ 'yes' if role_ssh.enable_x_forward | bool else 'no' }}
 AllowUsers {{ role_admin.user }}

@@ -37,7 +37,7 @@
     mode: "0600"
     owner: "{{ role_admin_user }}"
     group: "{{ role_admin_user }}"
-  when: role_ssh.enable_pubkey_auth == 'yes'
+  when: role_ssh.enable_pubkey_auth | bool
 
 - name: Add SSH keys for PAM sudo
   ansible.builtin.copy:
@@ -46,4 +46,4 @@
     mode: "0600"
     owner: root
     group: root
-  when: (role_ssh.enable_pubkey_auth == 'yes') and (role_ssh.enable_agent_auth | bool)
+  when: (role_ssh.enable_pubkey_auth | bool) and (role_ssh.enable_agent_auth | bool)

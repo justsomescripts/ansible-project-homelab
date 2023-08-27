@@ -1,9 +1,9 @@
 ---
 role_ssh:
   sshport: "22"
-  enable_pubkey_auth: "yes"
-  enable_password_auth: "no"
-  enable_x_forward: "no"
+  enable_pubkey_auth: true
+  enable_password_auth: false
+  enable_x_forward: false
   enable_agent_auth: true
   authorized_keys_dir: /etc/ssh/sudo_authorized_keys
 
