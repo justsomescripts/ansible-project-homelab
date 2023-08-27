@@ -12,6 +12,7 @@
       - users
     password: "{{ remote_user_configuration_admin.password | password_hash('sha512') }}"
     update_password: "{{ remote_user_configuration_admin.update_password }}"
+  become: true
   when: (ansible_user != remote_user_configuration_admin.user) and (remote_user_configuration_admin.create | bool)
 
 - name: Adjust prompt
