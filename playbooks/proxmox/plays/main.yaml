@@ -1,0 +1,34 @@
+---
+# Initialize new Proxmox instance using root user (idempotent)
+
+- name: Proxmox Virtual Environment
+  hosts: proxmox
+  vars_files:
+    - ../vars/main.yaml
+  remote_user: "{{ hosts_admin.user }}"
+
+  tasks:
+
+    - name: Ensure default packages are present
+      ansible.builtin.apt:
+        name: "{{ hosts_packages }} "
+        update_cache: true
+      become: true
+
+    - name: Configure Chrony
+      ansible.builtin.import_role:
+        name: ../../../roles/chrony_configuration # noqa: role-name
+      vars:
+        role_ntp_server: "{{ hosts_time.ntp_server }}"
+      notify:
+        - restart_chrony
+      become: true
+
+  handlers:
+
+    - name: Restart sshd after initialization
+      ansible.builtin.systemd_service:
+        state: restarted
+        name: chrony
+      listen:
+        - restart_chrony

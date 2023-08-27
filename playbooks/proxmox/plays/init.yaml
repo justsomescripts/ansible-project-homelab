@@ -1,4 +1,6 @@
 ---
+# Initialize new Proxmox instance using root user (idempotent)
+
 - name: Proxmox Virtual Environment
   hosts: proxmox
   vars_files:
@@ -7,6 +9,10 @@
   become: false
 
   tasks:
+
+    - name: Set SSH port to 22 for initialization
+      ansible.builtin.set_fact:
+        ansible_port: "22"
 
     - name: Add subscription key
       ansible.builtin.command: pvesubscription set {{ pve.subscription_key }}
@@ -23,23 +29,8 @@
             update_cache: true
             upgrade: dist
 
-        - name: Add default packages
-          ansible.builtin.apt:
-            name:
-              - vim
-              - tmux
-              - libpam-ssh-agent-auth
-
     - name: Configure system
       block:
-
-        - name: Configure Chrony
-          ansible.builtin.import_role:
-            name: ../../../roles/chrony_configuration # noqa: role-name
-          vars:
-            role_ntp_server: "{{ hosts_time.ntp_server }}"
-          notify:
-            - restart_chrony
 
         - name: Configure SSH admin user
           ansible.builtin.import_role:
@@ -70,10 +61,3 @@
         name: sshd
       listen:
         - restart_sshd
-
-    - name: Restart sshd after initialization
-      ansible.builtin.systemd_service:
-        state: restarted
-        name: chrony
-      listen:
-        - restart_chrony
