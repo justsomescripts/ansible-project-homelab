@@ -1,12 +1,8 @@
 ---
-- name: Gather current user
-  ansible.builtin.set_fact:
-    current_user: "{{ lookup('env', 'USER') }}"
-
 - name: Ensure sudo is installed
   ansible.builtin.package:
     name: sudo
-  when: current_user == 'root'
+  when: ansible_user == 'root'
 
 - name: Ensure admin user is present
   ansible.builtin.user:
@@ -16,7 +12,7 @@
       - users
     password: "{{ remote_user_configuration_admin.password | password_hash('sha512') }}"
     update_password: "{{ remote_user_configuration_admin.update_password }}"
-  when: (current_user != remote_user_configuration_admin.user) and (remote_user_configuration_admin.create | bool)
+  when: (ansible_user != remote_user_configuration_admin.user) and (remote_user_configuration_admin.create | bool)
 
 - name: Adjust prompt
   ansible.builtin.template:
@@ -50,7 +46,7 @@
   become: true
   block:
 
-    - name: Install libpam-ssh-agent-auth
+    - name: Ensure libpam-ssh-agent-auth is installed
       ansible.builtin.package:
         name: libpam-ssh-agent-auth
 
