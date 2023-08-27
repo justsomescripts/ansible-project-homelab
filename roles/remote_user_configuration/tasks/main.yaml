@@ -50,13 +50,23 @@
       ansible.builtin.package:
         name: libpam-ssh-agent-auth
 
-    - name: Template PAM sudo config
-      ansible.builtin.template:
-        src: pam_sudo.j2
-        dest: /etc/pam.d/sudo
-        mode: "0600"
-        owner: root
-        group: root
+    - name: Update PAM sudo config
+      ansible.builtin.lineinfile:
+        line: auth sufficient pam_ssh_agent_auth.so file={{ remote_user_configuration_ssh.authorized_keys_dir }}
+        path: /etc/pam.d/sudo
+        insertbefore: '^@include common-auth$'
+
+    - name: Check if /etc/pam.d/sudo-i exists (common on Debian)
+      ansible.builtin.stat:
+        path: /etc/pam.d/sudo
+      register: sudo_i
+
+    - name: Update PAM sudo-i config
+      ansible.builtin.lineinfile:
+        line: auth sufficient pam_ssh_agent_auth.so file={{ remote_user_configuration_ssh.authorized_keys_dir }}
+        path: /etc/pam.d/sudo-i
+        insertbefore: '^@include common-auth$'
+      when: sudo_i.stat.exists
 
     - name: Add SSH keys for PAM sudo
       ansible.builtin.copy:
