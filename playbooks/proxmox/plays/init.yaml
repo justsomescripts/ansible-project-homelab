@@ -7,12 +7,10 @@
     - ../vars/init.yaml
   remote_user: root
   become: false
+  vars:
+    ansible_port: "22"
 
   tasks:
-
-    - name: Set SSH port to 22 for initialization
-      ansible.builtin.set_fact:
-        ansible_port: "22"
 
     - name: Add subscription key
       ansible.builtin.command: pvesubscription set {{ pve.subscription_key }}
