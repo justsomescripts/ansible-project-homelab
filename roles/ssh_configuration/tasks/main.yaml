@@ -33,10 +33,10 @@
 - name: Add SSH keys to home
   ansible.builtin.copy:
     content: "{{ role_ssh.sshkey }}"
-    dest: /home/{{ role_admin_user }}/.ssh/authorized_keys
+    dest: /home/{{ role_admin.user }}/.ssh/authorized_keys
     mode: "0600"
-    owner: "{{ role_admin_user }}"
-    group: "{{ role_admin_user }}"
+    owner: "{{ role_admin.user }}"
+    group: "{{ role_admin.user }}"
   when: role_ssh.enable_pubkey_auth | bool
 
 - name: Add SSH keys for PAM sudo
