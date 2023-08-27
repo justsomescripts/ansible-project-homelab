@@ -10,22 +10,22 @@
 
 - name: Ensure admin user is present
   ansible.builtin.user:
-    name: "{{ role_admin.user }}"
+    name: "{{ remote_user_configuration_admin.user }}"
     groups:
       - sudo
       - users
-    password: "{{ role_admin.password | password_hash('sha512') }}"
-    update_password: "{{ role_admin.update_password }}"
-  when: (current_user != role_admin.user) and (role_admin.create | bool)
+    password: "{{ remote_user_configuration_admin.password | password_hash('sha512') }}"
+    update_password: "{{ remote_user_configuration_admin.update_password }}"
+  when: (current_user != remote_user_configuration_admin.user) and (remote_user_configuration_admin.create | bool)
 
 - name: Adjust prompt
   ansible.builtin.template:
     src: ../templates/bashrc.j2 # noqa no-relative-paths
-    dest: /home/{{ role_admin.user }}/.bashrc
-    owner: "{{ role_admin.user }}"
-    group: "{{ role_admin.user }}"
+    dest: /home/{{ remote_user_configuration_admin.user }}/.bashrc
+    owner: "{{ remote_user_configuration_admin.user }}"
+    group: "{{ remote_user_configuration_admin.user }}"
     mode: "0644"
-  when: role_prompt.enabled | bool
+  when: remote_user_configuration_prompt.enabled | bool
 
 - name: Configure SSH
   ansible.builtin.template:
@@ -38,15 +38,15 @@
 
 - name: Add SSH keys to home
   ansible.builtin.copy:
-    content: "{{ role_ssh.sshkey }}"
-    dest: /home/{{ role_admin.user }}/.ssh/authorized_keys
+    content: "{{ remote_user_configuration_ssh.sshkey }}"
+    dest: /home/{{ remote_user_configuration_admin.user }}/.ssh/authorized_keys
     mode: "0600"
-    owner: "{{ role_admin.user }}"
-    group: "{{ role_admin.user }}"
-  when: role_ssh.enable_pubkey_auth | bool
+    owner: "{{ remote_user_configuration_admin.user }}"
+    group: "{{ remote_user_configuration_admin.user }}"
+  when: remote_user_configuration_ssh.enable_pubkey_auth | bool
 
 - name: Configure PAM agent auth
-  when: (role_ssh.enable_pubkey_auth | bool) and (role_ssh.enable_agent_auth | bool)
+  when: (remote_user_configuration_ssh.enable_pubkey_auth | bool) and (remote_user_configuration_ssh.enable_agent_auth | bool)
   become: true
   block:
 
@@ -64,7 +64,7 @@
 
     - name: Add SSH keys for PAM sudo
       ansible.builtin.copy:
-        content: "{{ role_ssh.sshkey }}"
+        content: "{{ remote_user_configuration_ssh.sshkey }}"
         dest: /etc/ssh/sudo_authorized_keys
         mode: "0600"
         owner: root

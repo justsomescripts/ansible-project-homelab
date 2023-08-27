@@ -1,5 +1,5 @@
 ---
-role_ssh:
+remote_user_configuration_ssh:
   sshport: "22"
   enable_pubkey_auth: true
   enable_password_auth: false
@@ -7,12 +7,12 @@ role_ssh:
   enable_agent_auth: true
   authorized_keys_dir: /etc/ssh/sudo_authorized_keys
 
-role_admin:
+remote_user_configuration_admin:
   user: root
   password: changeme
   update_password: on_create
   create: false
 
-role_prompt:
+remote_user_configuration_prompt:
   enabled: false
   color_code: "32"

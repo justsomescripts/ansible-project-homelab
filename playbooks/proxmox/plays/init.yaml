@@ -29,24 +29,6 @@
     - name: Configure SSH admin user
       ansible.builtin.import_role:
         name: remote_user_configuration
-      vars:
-        role_prompt:
-          enabled: "{{ hosts_prompt.enabled }}"
-          color_code: "{{ hosts_prompt.color_code }}"
-        role_admin:
-          user: "{{ hosts_admin.user }}"
-          password: "{{ hosts_admin.password }}"
-          update_password: "{{ hosts_admin.update_password }}"
-          create: "{{ hosts_admin.create }}"
-          groups: "{{ hosts_admin.groups }}"
-        role_ssh:
-          sshkey: "{{ hosts_ssh.sshkey }}"
-          sshport: "{{ hosts_ssh.sshport }}"
-          enable_pubkey_auth: "{{ hosts_ssh.enable_pubkey_auth }}"
-          enable_agent_auth: "{{ hosts_ssh.enable_agent_auth }}"
-          enable_password_auth: "{{ hosts_ssh.enable_password_auth }}"
-          enable_x_forward: "{{ hosts_ssh.enable_x_forward }}"
-          authorized_keys_dir: "{{ hosts_ssh.authorized_keys_dir }}"
       notify:
         - restart_sshd
 

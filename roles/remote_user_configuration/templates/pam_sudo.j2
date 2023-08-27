@@ -4,7 +4,7 @@
 session    required   pam_limits.so
 
 # SSH agent auth
-auth       sufficient pam_ssh_agent_auth.so file={{ role_ssh.authorized_keys_dir }}
+auth       sufficient pam_ssh_agent_auth.so file={{ remote_user_configuration_ssh.authorized_keys_dir }}
 
 @include common-auth
 @include common-account
