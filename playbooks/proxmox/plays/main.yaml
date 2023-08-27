@@ -17,7 +17,7 @@
 
     - name: Configure SSH admin user
       ansible.builtin.import_role:
-        name: ../../../roles/remote_user_configuration # noqa: role-name
+        name: remote_user_configuration
       vars:
         role_prompt:
           enabled: "{{ hosts_prompt.enabled }}"
@@ -41,7 +41,7 @@
 
     - name: Configure Chrony
       ansible.builtin.import_role:
-        name: ../../../roles/chrony_configuration # noqa: role-name
+        name: chrony_configuration
       vars:
         role_ntp_server: "{{ hosts_time.ntp_server }}"
       notify:
