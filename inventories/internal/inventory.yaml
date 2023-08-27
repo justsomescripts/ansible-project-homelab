@@ -1,4 +1,53 @@
 ---
+linux:
+  vars:
+    ansible_port: "1337"
+    ansible_become_pass: "{{ lookup('community.general.bitwarden', 'Proxmox VE david', field='password')[0] }}"
+
+    linux_init:
+      ansible_ssh_pass: "{{ lookup('community.general.bitwarden', 'Proxmox VE root', field='password')[0] }}"
+      ansible_port: "22"
+
+    linux_packages:
+      - vim
+      - tmux
+      - htop
+
+    chrony_configuration_time:
+      ntp_server: "192.168.178.3"
+
+    remote_user_configuration_prompt:
+      enabled: true
+      color_code: 33
+
+    remote_user_configuration_admin:
+      user: david
+      create: true
+      update_password: always
+      password: "{{ lookup('community.general.bitwarden', 'Proxmox VE david', field='password')[0] }}"
+      groups:
+        - sudo
+        - users
+
+    remote_user_configuration_ssh:
+      sshport: "1337"
+      sshkey: "{{ lookup('community.general.bitwarden', 'Proxmox VE david', field='SSH Public Key')[0] }}\n"
+      enable_pubkey_auth: true
+      enable_password_auth: false
+      enable_x_forward: false
+      enable_agent_auth: true
+      authorized_keys_dir: /etc/ssh/sudo_authorized_keys
+
+  children:
+    pihole:
+    truenas:
+    proxmox:
+
+hardware:
+  children:
+    proxmox:
+    pihole:
+
 proxmox:
   hosts:
     pve.host.dgries.de:
@@ -10,45 +59,3 @@ truenas:
 pihole:
   hosts:
     pi.host.dgries.de:
-
-linux:
-  children:
-    pihole:
-    truenas:
-    proxmox:
-  vars:
-    ansible_port: "1337"
-    ansible_become_pass: "{{ lookup('community.general.bitwarden', 'Proxmox VE david', field='password')[0] }}"
-    linux_init:
-      ansible_ssh_pass: "{{ lookup('community.general.bitwarden', 'Proxmox VE root', field='password')[0] }}"
-      ansible_port: "22"
-    linux_packages:
-      - vim
-      - tmux
-      - htop
-    chrony_configuration_time:
-      ntp_server: "192.168.178.3"
-    remote_user_configuration_prompt:
-      enabled: true
-      color_code: 33
-    remote_user_configuration_admin:
-      user: david
-      create: true
-      update_password: always
-      password: "{{ lookup('community.general.bitwarden', 'Proxmox VE david', field='password')[0] }}"
-      groups:
-        - sudo
-        - users
-    remote_user_configuration_ssh:
-      sshport: "1337"
-      sshkey: "{{ lookup('community.general.bitwarden', 'Proxmox VE david', field='SSH Public Key')[0] }}\n"
-      enable_pubkey_auth: true
-      enable_password_auth: false
-      enable_x_forward: false
-      enable_agent_auth: true
-      authorized_keys_dir: /etc/ssh/sudo_authorized_keys
-
-hardware:
-  children:
-    proxmox:
-    pihole:
