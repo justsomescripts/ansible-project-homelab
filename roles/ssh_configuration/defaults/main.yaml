@@ -1,0 +1,8 @@
+---
+role_ssh_port: "22"
+role_pubkey_auth: "yes"
+role_password_auth: "yes"
+role_x_forward: "yes"
+role_admin_user: "root"
+role_authorized_keys: /etc/ssh/sudo_authorized_keys
+role_agent_auth_enabled: false

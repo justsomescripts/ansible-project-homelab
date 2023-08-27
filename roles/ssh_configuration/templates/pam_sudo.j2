@@ -1,0 +1,11 @@
+#%PAM-1.0
+
+# Set up user limits from /etc/security/limits.conf.
+session    required   pam_limits.so
+
+# SSH agent auth
+auth       sufficient pam_ssh_agent_auth.so file={{ role_authorized_keys }}
+
+@include common-auth
+@include common-account
+@include common-session-noninteractive

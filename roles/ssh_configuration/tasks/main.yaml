@@ -1,0 +1,17 @@
+---
+- name: Configure SSH
+  ansible.builtin.template:
+    src: sshd_config.conf.j2
+    dest: /etc/ssh/sshd_config.d/user.conf
+    mode: "0644"
+    owner: root
+    group: root
+
+- name: Configure PAM agent auth
+  ansible.builtin.template:
+    src: pam_sudo.j2
+    dest: /etc/pam.d/sudo
+    mode: "0600"
+    owner: root
+    group: root
+  when: role_agent_auth_enabled | bool
