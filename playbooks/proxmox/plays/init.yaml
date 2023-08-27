@@ -1,0 +1,92 @@
+---
+- name: Proxmox Virtual Environment
+  hosts: proxmox
+  vars_files:
+    - ../vars/init.yaml
+  remote_user: root
+  become: false
+
+  tasks:
+
+    - name: Add subscription key
+      ansible.builtin.command: pvesubscription set {{ pve.subscription_key[0] }}
+      args:
+        creates: /etc/subscription
+
+    - name: Update and install packages
+      block:
+
+        - name: Update packages
+          ansible.builtin.apt:
+            autoclean: true
+            autoremove: true
+            update_cache: true
+            upgrade: dist
+
+        - name: Add default packages
+          ansible.builtin.apt:
+            name:
+              - vim
+              - tmux
+              - libpam-ssh-agent-auth
+
+#    - name: Configure system
+#      block:
+#
+#        - name: Add users
+
+    - name: Configure packages
+      block:
+
+        - name: Configure Chrony
+          ansible.builtin.import_role:
+            name: ../../../roles/chrony_configuration # noqa: role-name
+          vars:
+            role_ntp_server: "{{ system.ntp_server }}"
+          notify:
+            - restart-chrony
+
+        - name: Configure SSH
+          ansible.builtin.import_role:
+            name: ../../../roles/ssh_configuration # noqa: role-name
+          vars:
+            role_ssh_port: "{{ system.ssh_port }}"
+            role_pubkey_auth: "yes"
+            role_password_auth: "no"
+            role_x_forward: "no"
+            role_admin_user: "{{ system.admin_user }}"
+            role_agent_auth_enabled: "{{ system.sudo_ssh_agent }}"
+          notify:
+            - restart-sshd
+
+        - name: Add SSH keys to home
+          ansible.builtin.copy:
+            content: "{{ system.authorized_ssh_key[0] }}\n"
+            dest: /home/{{ system.admin_user }}/.ssh/authorized_keys
+            mode: "0600"
+            owner: "{{ system.admin_user }}"
+            group: "{{ system.admin_user }}"
+
+        - name: Add SSH keys for PAM sudo
+          ansible.builtin.copy:
+            content: "{{ system.authorized_ssh_key[0] }}\n"
+            dest: /etc/ssh/sudo_authorized_keys
+            mode: "0600"
+            owner: root
+            group: root
+
+  handlers:
+
+    - name: Restart sshd after initialization
+      ansible.builtin.systemd_service:
+        state: restarted
+        name: sshd
+      listen:
+        - restart-sshd
+
+    - name: Restart sshd after initialization
+      ansible.builtin.systemd_service:
+        state: restarted
+        name: chrony
+      listen:
+        - restart-chrony
