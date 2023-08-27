@@ -1,0 +1,12 @@
+---
+- name: Install Chrony
+  ansible.builtin.package:
+    name: chrony
+
+- name: Configure Chrony sources
+  ansible.builtin.template:
+    src: sources.j2
+    dest: /etc/chrony/sources.d/local-ntp-server.sources
+    mode: "0644"
+    owner: root
+    group: root
