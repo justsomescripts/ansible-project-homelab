@@ -2,16 +2,19 @@ proxmox:
   hosts:
     pve.host.dgries.de:
       hosts_ssh_port: 1337
+      hosts_admin_user: david
 
 truenas:
   hosts:
     tns.host.dgries.de:
       hosts_ssh_port: 1337
+      hosts_admin_user: david
 
 pihole:
   hosts:
     pi.host.dgries.de:
       hosts_ssh_port: 1337
+      hosts_admin_user: david
 
 linux:
   children:
