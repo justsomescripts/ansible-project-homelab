@@ -1,7 +1,12 @@
 ---
+- name: Gather current user
+  ansible.builtin.set_fact:
+    current_user: "{{ lookup('env', 'USER') }}"
+
 - name: Ensure sudo is installed
   ansible.builtin.package:
     name: sudo
+  when: current_user == 'root'
 
 - name: Ensure admin user is present
   ansible.builtin.user:
@@ -11,7 +16,7 @@
       - users
     password: "{{ role_admin.password | password_hash('sha512') }}"
     update_password: "{{ role_admin.update_password }}"
-  when: role_admin.create | bool
+  when: (current_user != role_admin.user) and (role_admin.create | bool)
 
 - name: Adjust prompt
   ansible.builtin.template:
@@ -29,6 +34,7 @@
     mode: "0644"
     owner: root
     group: root
+  become: true
 
 - name: Add SSH keys to home
   ansible.builtin.copy:
@@ -41,6 +47,7 @@
 
 - name: Configure PAM agent auth
   when: (role_ssh.enable_pubkey_auth | bool) and (role_ssh.enable_agent_auth | bool)
+  become: true
   block:
 
     - name: Install libpam-ssh-agent-auth
