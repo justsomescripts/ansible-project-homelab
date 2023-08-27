@@ -17,6 +17,11 @@ linux:
     truenas:
     proxmox:
   vars:
+    ansible_port: "1337"
+    hosts_packages:
+      - vim
+      - tmux
+      - htop
     hosts_time:
       ntp_server: "192.168.178.3"
     hosts_admin:
