@@ -48,12 +48,17 @@
             role_admin:
               user: "{{ hosts_admin.user }}"
               password: "{{ hosts_admin.password }}"
-              update_password: "{{ system.admin.update_password }}"
-              create: "{{ system.admin.create }}"
+              update_password: "{{ hosts_admin.update_password }}"
+              create: "{{ hosts_admin.create }}"
               groups: "{{ hosts_admin.groups }}"
             role_ssh:
               sshkey: "{{ hosts_ssh.sshkey }}\n"
               sshport: "{{ hosts_ssh.sshport }}"
+              enable_pubkey_auth: "{{ hosts_ssh.enable_pubkey_auth }}"
+              enable_agent_auth: "{{ hosts_ssh.enable_agent_auth }}"
+              enable_password_auth: "{{ hosts_ssh.enable_password_auth }}"
+              enable_x_forward: "{{ hosts_ssh.enable_x_forward }}"
+              authorized_keys_dir: "{{ hosts_ssh.authorized_keys_dir }}"
           notify:
             - restart-sshd
 
@@ -64,11 +69,11 @@
         state: restarted
         name: sshd
       listen:
-        - restart-sshd
+        - restart_sshd
 
     - name: Restart sshd after initialization
       ansible.builtin.systemd_service:
         state: restarted
         name: chrony
       listen:
-        - restart-chrony
+        - restart_chrony
