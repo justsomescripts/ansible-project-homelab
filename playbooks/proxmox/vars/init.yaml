@@ -1,3 +1,3 @@
 ---
 pve:
-  subscription_key: "{{ lookup('community.general.bitwarden', 'Proxmox VE Subscription', field='Subscription Key 1 CPU') }}"
+  subscription_key: "{{ lookup('community.general.bitwarden', 'Proxmox VE Subscription', field='Subscription Key 1 CPU')[0] }}"

@@ -23,13 +23,13 @@ linux:
       user: david
       create: true
       update_password: always
-      password: "{{ lookup('community.general.bitwarden', 'Proxmox VE david', field='password') }}"
+      password: "{{ lookup('community.general.bitwarden', 'Proxmox VE david', field='password')[0] }}"
       groups:
         - sudo
         - users
     hosts_ssh:
       sshport: "1337"
-      sshkey: "{{ lookup('community.general.bitwarden', 'Proxmox VE david', field='SSH Public Key') }}"
+      sshkey: "{{ lookup('community.general.bitwarden', 'Proxmox VE david', field='SSH Public Key')[0] }}"
       enable_pubkey_auth: true
       enable_password_auth: false
       enable_x_forward: false
