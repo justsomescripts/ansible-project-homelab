@@ -11,7 +11,7 @@
 
     - name: Ensure default packages are present
       ansible.builtin.apt:
-        name: "{{ hosts_packages }} "
+        name: "{{ hosts_packages }}"
         update_cache: true
       become: true
 
