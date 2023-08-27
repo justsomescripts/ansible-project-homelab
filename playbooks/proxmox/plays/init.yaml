@@ -39,7 +39,7 @@
           vars:
             role_ntp_server: "{{ hosts_time.ntp_server }}"
           notify:
-            - restart-chrony
+            - restart_chrony
 
         - name: Configure SSH admin user
           ansible.builtin.import_role:
@@ -60,7 +60,7 @@
               enable_x_forward: "{{ hosts_ssh.enable_x_forward }}"
               authorized_keys_dir: "{{ hosts_ssh.authorized_keys_dir }}"
           notify:
-            - restart-sshd
+            - restart_sshd
 
   handlers:
 
