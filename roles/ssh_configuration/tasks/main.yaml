@@ -1,4 +1,14 @@
 ---
+- name: Ensure admin user is present
+  ansible.builtin.user:
+    name: "{{ role_admin.user }}"
+    groups:
+      - sudo
+      - users
+    password: "{{ role_admin.password[0] | password_hash('sha512') }}"
+    update_password: "{{ role_admin.update_password }}"
+  when: role_admin.create | bool
+
 - name: Configure SSH
   ansible.builtin.template:
     src: sshd_config.conf.j2
@@ -14,4 +24,22 @@
     mode: "0600"
     owner: root
     group: root
-  when: role_agent_auth_enabled | bool
+  when: role_ssh.enable_agent_auth | bool
+
+- name: Add SSH keys to home
+  ansible.builtin.copy:
+    content: "{{ role_ssh.sshkey }}"
+    dest: /home/{{ role_admin_user }}/.ssh/authorized_keys
+    mode: "0600"
+    owner: "{{ role_admin_user }}"
+    group: "{{ role_admin_user }}"
+  when: role_ssh.enable_pubkey_auth == 'yes'
+
+- name: Add SSH keys for PAM sudo
+  ansible.builtin.copy:
+    content: "{{ role_ssh.sshkey }}"
+    dest: /etc/ssh/sudo_authorized_keys
+    mode: "0600"
+    owner: root
+    group: root
+  when: (role_ssh.enable_pubkey_auth == 'yes') and (role_ssh.enable_agent_auth | bool)

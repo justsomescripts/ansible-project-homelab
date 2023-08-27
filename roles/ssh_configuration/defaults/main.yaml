@@ -1,8 +1,14 @@
 ---
-role_ssh_port: "22"
-role_pubkey_auth: "yes"
-role_password_auth: "yes"
-role_x_forward: "yes"
-role_admin_user: "root"
-role_authorized_keys: /etc/ssh/sudo_authorized_keys
-role_agent_auth_enabled: false
+role_ssh:
+  port: "22"
+  enable_pubkey_auth: "yes"
+  enable_password_auth: "no"
+  enable_x_forward: "no"
+  enable_agent_auth: true
+  authorized_keys_dir: /etc/ssh/sudo_authorized_keys
+
+role_admin:
+  user: root
+  password: changeme
+  update_password: on_create
+  create: false
