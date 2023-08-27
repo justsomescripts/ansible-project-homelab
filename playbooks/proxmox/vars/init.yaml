@@ -1,10 +1,8 @@
 ---
 pve:
-  subscription_key: "{{ lookup('community.general.bitwarden', 'Proxmox VE Subscription', field='Subscription Key 1 CPU') }}" 
+  subscription_key: "{{ lookup('community.general.bitwarden', 'Proxmox VE Subscription', field='Subscription Key 1 CPU') }}"
 
 system:
-  authorized_ssh_key: "{{ lookup('community.general.bitwarden', 'Proxmox VE david', field='SSH Public Key') }}"
-  admin_user: "{{ hosts_admin_user }}"
-  ssh_port: "{{ hosts_ssh_port }}"
-  sudo_ssh_agent: true
-  ntp_server: "192.168.178.3"
+  admin:
+    create: true
+    update_password: always

@@ -30,50 +30,32 @@
               - tmux
               - libpam-ssh-agent-auth
 
-#    - name: Configure system
-#      block:
-#
-#        - name: Add users
-
-    - name: Configure packages
+    - name: Configure system
       block:
 
         - name: Configure Chrony
           ansible.builtin.import_role:
             name: ../../../roles/chrony_configuration # noqa: role-name
           vars:
-            role_ntp_server: "{{ system.ntp_server }}"
+            role_ntp_server: "{{ hosts_time.ntp_server }}"
           notify:
             - restart-chrony
 
-        - name: Configure SSH
+        - name: Configure SSH admin user
           ansible.builtin.import_role:
             name: ../../../roles/ssh_configuration # noqa: role-name
           vars:
-            role_ssh_port: "{{ system.ssh_port }}"
-            role_pubkey_auth: "yes"
-            role_password_auth: "no"
-            role_x_forward: "no"
-            role_admin_user: "{{ system.admin_user }}"
-            role_agent_auth_enabled: "{{ system.sudo_ssh_agent }}"
+            role_admin:
+              user: "{{ hosts_admin.user }}"
+              password: "{{ hosts_admin.password }}"
+              update_password: "{{ system.admin.update_password }}"
+              create: "{{ system.admin.create }}"
+              groups: "{{ hosts_admin.groups }}"
+            role_ssh:
+              sshkey: "{{ hosts_ssh.sshkey }}\n"
+              sshport: "{{ hosts_ssh.sshport }}"
           notify:
             - restart-sshd
-
-        - name: Add SSH keys to home
-          ansible.builtin.copy:
-            content: "{{ system.authorized_ssh_key[0] }}\n"
-            dest: /home/{{ system.admin_user }}/.ssh/authorized_keys
-            mode: "0600"
-            owner: "{{ system.admin_user }}"
-            group: "{{ system.admin_user }}"
-
-        - name: Add SSH keys for PAM sudo
-          ansible.builtin.copy:
-            content: "{{ system.authorized_ssh_key[0] }}\n"
-            dest: /etc/ssh/sudo_authorized_keys
-            mode: "0600"
-            owner: root
-            group: root
 
   handlers:
 
