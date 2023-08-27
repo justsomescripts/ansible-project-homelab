@@ -34,7 +34,7 @@
 
         - name: Configure SSH admin user
           ansible.builtin.import_role:
-            name: ../../../roles/ssh_configuration # noqa: role-name
+            name: ../../../roles/remote_user_configuration # noqa: role-name
           vars:
             role_admin:
               user: "{{ hosts_admin.user }}"
