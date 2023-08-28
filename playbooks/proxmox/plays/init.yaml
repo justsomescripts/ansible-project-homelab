@@ -32,7 +32,7 @@
     - name: Create initialized file
       ansible.builtin.copy:
         content: |
-          Initialized using Ansible on {{ ansible_date_time.date }} {{ ansible_date_time.hour }} {{ ansible_date_time.minute }}
+          Initialized using Ansible on {{ ansible_date_time.date }} {{ ansible_date_time.hour }}:{{ ansible_date_time.minute }}
         dest: /etc/.initialization_done
         mode: "0644"
         owner: root
