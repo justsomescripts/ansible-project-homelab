@@ -13,14 +13,14 @@ linux:
       - tmux
       - htop
 
-    chrony_configuration_time:
+    chrony_configuration__time:
       ntp_server: "192.168.178.3"
 
-    remote_user_configuration_prompt:
+    remote_user_configuration__prompt:
       enabled: true
       color_code: 33
 
-    remote_user_configuration_admin:
+    remote_user_configuration__admin:
       user: david
       create: true
       update_password: always
@@ -29,7 +29,7 @@ linux:
         - sudo
         - users
 
-    remote_user_configuration_ssh:
+    remote_user_configuration__ssh:
       sshport: "1337"
       sshkey: "{{ lookup('community.general.bitwarden', 'Proxmox VE david', field='SSH Public Key')[0] }}\n"
       enable_pubkey_auth: true
