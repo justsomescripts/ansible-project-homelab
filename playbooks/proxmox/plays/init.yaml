@@ -28,3 +28,13 @@
     - name: Configure SSH admin user
       ansible.builtin.import_role:
         name: remote_user_configuration
+
+    - name: Create initialized file
+      ansible.builtin.copy:
+        content: |
+          Initialized using Ansible on {{ ansible_date_time.date }} {{ ansible_date_time.hour }} {{ ansible_date_time.minute }}
+        dest: /etc/.initialization_done
+        mode: "0644"
+        owner: root
+        group: root
+        force: false
