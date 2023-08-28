@@ -20,3 +20,6 @@
     - name: Configure Chrony
       ansible.builtin.import_role:
         name: chrony_configuration
+
+    - name: Continue with main playbook
+      ansible.builtin.import_playbook: proxmox.yaml 
