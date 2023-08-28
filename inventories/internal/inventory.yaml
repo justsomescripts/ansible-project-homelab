@@ -20,6 +20,10 @@ linux:
       enabled: true
       color_code: 33
 
+    remote_user_configuration__tmux:
+      enabled: true
+      color: yellow
+
     remote_user_configuration__admin:
       user: david
       create: true

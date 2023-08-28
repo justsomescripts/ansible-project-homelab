@@ -24,6 +24,15 @@
     mode: "0644"
   when: remote_user_configuration__prompt.enabled | bool
 
+- name: Adjust Tmux
+  ansible.builtin.template:
+    src: ../templates/tmux.conf.j2 # noqa no-relative-paths
+    dest: /home/{{ remote_user_configuration__admin.user }}/.tmux.conf
+    owner: "{{ remote_user_configuration__admin.user }}"
+    group: "{{ remote_user_configuration__admin.user }}"
+    mode: "0644"
+  when: remote_user_configuration__tmux.enabled | bool
+
 - name: Configure SSH
   ansible.builtin.template:
     src: sshd_config.conf.j2
