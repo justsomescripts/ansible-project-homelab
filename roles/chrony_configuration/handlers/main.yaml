@@ -1,0 +1,7 @@
+---
+- name: Restart Chrony after initialization
+  ansible.builtin.systemd_service:
+    state: restarted
+    name: chrony
+  become: true
+  listen: restart_chrony

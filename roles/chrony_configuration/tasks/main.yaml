@@ -12,3 +12,4 @@
     owner: root
     group: root
   become: true
+  notify: restart_chrony

@@ -28,14 +28,3 @@
     - name: Configure SSH admin user
       ansible.builtin.import_role:
         name: remote_user_configuration
-      notify:
-        - restart_sshd
-
-  handlers:
-
-    - name: Restart sshd after initialization
-      ansible.builtin.systemd_service:
-        state: restarted
-        name: sshd
-      listen:
-        - restart_sshd
