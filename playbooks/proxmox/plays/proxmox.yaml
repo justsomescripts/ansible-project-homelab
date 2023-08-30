@@ -12,15 +12,23 @@
         name: "{{ linux__packages }}"
         update_cache: true
       become: true
+      tags:
+        - default_packages
 
     - name: Configure SSH admin user
       ansible.builtin.import_role:
         name: remote_user_configuration
+      tags:
+        - remote_user_configuration
 
     - name: Configure Chrony
       ansible.builtin.import_role:
         name: chrony_configuration
+      tags:
+        - chrony_configuration
 
     - name: Configure UPS
       ansible.builtin.import_role:
         name: ups_configuration
+      tags:
+        - ups_configuration
