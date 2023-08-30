@@ -86,3 +86,10 @@
         mode: "0600"
         owner: root
         group: root
+
+- name: Ensure SSHD is running after initialization
+  ansible.builtin.service:
+    name: sshd
+    state: started
+    enabled: true
+  become: true
