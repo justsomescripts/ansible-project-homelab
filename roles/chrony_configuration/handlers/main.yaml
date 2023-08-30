@@ -1,8 +1,7 @@
 ---
 - name: Restart Chrony after initialization
   ansible.builtin.service:
-    enabled: true
-    state: restarted
     name: chrony
+    state: restarted
   become: true
   listen: restart_chrony

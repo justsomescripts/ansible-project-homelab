@@ -13,3 +13,10 @@
     group: root
   become: true
   notify: restart_chrony
+
+- name: Ensure Chrony is running after initialization
+  ansible.builtin.service:
+    name: chrony
+    state: started
+    enabled: true
+  become: true
