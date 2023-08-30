@@ -1,0 +1,23 @@
+---
+linux:
+  children:
+    pihole:
+    truenas:
+    proxmox:
+
+hardware:
+  children:
+    proxmox:
+    pihole:
+
+proxmox:
+  hosts:
+    pve.host.dgries.de:
+
+truenas:
+  hosts:
+    tns.host.dgries.de:
+
+pihole:
+  hosts:
+    pi.host.dgries.de:
