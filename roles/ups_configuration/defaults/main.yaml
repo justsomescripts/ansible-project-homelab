@@ -1,15 +1,15 @@
 ---
 ups_configuration__user:
   username: upsmon
-  password: "{{ lookup('community.general.bitwarden', 'Proxmox VE system', field='UPS Password') }}"
+  password: changeme
 
 ups_configuration__nut:
   mode: standalone
 
 ups_configuration__ups:
   maxretry: 3
-  name: Eaton3S
-  driver: usbhid-ups
+  name: upsname
+  driver: upsdriver
   port: auto
 
 ups_configuration__upsd:
@@ -29,6 +29,6 @@ ups_configuration__upsmon:
   nocommwarntime: 300
   finaldelay: 5
   monitor:
-    system: "{{ ups_configuration__ups.name }}@localhost"
+    system: "{{ ups_configuration__ups.name }}@localhost" # Eaton3S@localhost
     powervalue: 1
     type: master

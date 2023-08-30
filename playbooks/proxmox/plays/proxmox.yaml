@@ -21,3 +21,6 @@
       ansible.builtin.import_role:
         name: chrony_configuration
 
+    - name: Configure UPS
+      ansible.builtin.import_role:
+        name: ups_configuration

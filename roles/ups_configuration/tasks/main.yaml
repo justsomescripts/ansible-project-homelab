@@ -1,0 +1,40 @@
+---
+- name: Ensure nut is installed
+  ansible.builtin.package:
+    name: nut
+  become: true
+
+- name: Copy configuration files
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: /etc/nut/
+    owner: root
+    group: nut
+    mode: "0640"
+  with_fileglob:
+    - ../files/*
+  notify: restart_nut
+  become: true
+
+- name: Copy templated configuration files
+  ansible.builtin.template:
+    src: "{{ item }}"
+    dest: /etc/nut/{{ item | basename | regex_replace('\.j2$', '') }}
+    owner: root
+    group: nut
+    mode: "0640"
+  with_fileglob:
+    - ../templates/*
+  notify: restart_nut
+  become: true
+
+- name: Ensure NUT services are running after configuration
+  ansible.builtin.service:
+    name: "{{ item }}"
+    state: started
+    enabled: true
+  become: true
+  loop:
+    - nut-server
+    - nut-client
+    - nut-driver@{{ ups_configuration__ups.name }}
