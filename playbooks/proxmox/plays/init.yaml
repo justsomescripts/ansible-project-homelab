@@ -38,3 +38,6 @@
         owner: root
         group: root
         force: false
+
+    - name: Continue with main playbook
+      ansible.builtin.import_playbook: proxmox.yaml 
