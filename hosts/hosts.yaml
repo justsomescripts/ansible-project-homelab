@@ -1,4 +1,10 @@
 ---
+internal:
+  children:
+    pihole:
+    truenas:
+    proxmox:
+
 linux:
   children:
     pihole:
