@@ -6,6 +6,7 @@
     update_cache: "{{ apt_upgrade__update.refresh_cache }}"
     upgrade: "{{ apt_upgrade__update.type }}"
     force_apt_get: "{{ apt_upgrade__update.force_apt_get }}"
+  become: true
 
 - name: Check if a reboot is required
   ansible.builtin.stat:
@@ -17,3 +18,4 @@
   when: >
     (reboot_required.stat.exists and apt_upgrade__reboot.if_required) or
     apt_upgrade__reboot.always
+  become: true
