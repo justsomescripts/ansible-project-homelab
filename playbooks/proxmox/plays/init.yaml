@@ -18,12 +18,9 @@
       args:
         creates: /etc/subscription
 
-    - name: Update packages
-      ansible.builtin.apt:
-        autoclean: true
-        autoremove: true
-        update_cache: true
-        upgrade: dist
+    - name: Configure SSH admin user
+      ansible.builtin.import_role:
+        name: apt_upgrade
 
     - name: Configure SSH admin user
       ansible.builtin.import_role:
@@ -41,3 +38,5 @@
 
     - name: Continue with main playbook
       ansible.builtin.import_playbook: proxmox.yaml 
+
+- handlers: Reboot if required

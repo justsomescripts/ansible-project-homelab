@@ -1,4 +1,9 @@
 ---
+# Host-specific subscription key
+pve:
+  subscription_key: "{{ lookup('community.general.bitwarden', 'Proxmox VE Subscription', field='Subscription Key 1 CPU')[0] }}"
+
+# Host-specific UPS configuration
 ups_configuration__user:
   username: upsmon
   password: "{{ lookup('community.general.bitwarden', 'Proxmox VE system', field='UPS Password') }}"
@@ -11,24 +16,3 @@ ups_configuration__ups:
   name: Eaton3S
   driver: usbhid-ups
   port: auto
-
-ups_configuration__upsd:
-  upsmon: master
-  actions: SET
-  instcmds: ALL
-
-ups_configuration__upsmon:
-  minsupplies: 1
-  shutdowncmd: /sbin/shutdown -h +0
-  pollfreq: 5
-  pollfreqalert: 5
-  hostsync: 15
-  deadtime: 15
-  powerdownflag: /etc/killpower
-  rbwarntime: 43200
-  nocommwarntime: 300
-  finaldelay: 5
-  monitor:
-    system: "{{ ups_configuration__ups.name }}@localhost"
-    powervalue: 1
-    type: master

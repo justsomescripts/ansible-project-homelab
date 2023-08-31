@@ -1,4 +1,5 @@
 ---
+# Host-specific system configuration
 ansible_port: "1337"
 ansible_become_pass: "{{ lookup('community.general.bitwarden', 'Proxmox VE david', field='password')[0] }}"
 
