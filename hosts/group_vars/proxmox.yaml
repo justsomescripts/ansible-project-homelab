@@ -10,9 +10,3 @@ ups_configuration__user:
 
 ups_configuration__nut:
   mode: standalone
-
-ups_configuration__ups:
-  maxretry: 3
-  name: Eaton3S
-  driver: usbhid-ups
-  port: auto

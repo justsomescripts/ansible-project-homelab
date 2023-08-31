@@ -4,8 +4,23 @@
   vars_files:
     - ../vars/proxmox.yaml
   remote_user: "{{ remote_user_configuration__admin.user }}"
-
   tasks:
+
+    - name: Set kernel boot parameters
+      ansible.builtin.copy:
+        content: "{{ kernel_cmdline }}"
+        dest: /etc/kernel/cmdline
+        backup: true
+        mode: "0644"
+        owner: root
+        group: root
+      when: kernel_cmdline is defined and kernel_cmdline
+      notify:
+        - reboot
+        - update_boot
+      become: true
+      tags:
+        - boot_configuration
 
     - name: Ensure default packages are present
       ansible.builtin.apt:
@@ -32,3 +47,16 @@
         name: ups_configuration
       tags:
         - ups_configuration
+
+  handlers:
+
+    - name: Update kernel boot parameters # noqa no-changed-when
+      ansible.builtin.command:
+        cmd: proxmox-boot-tool refresh
+      become: true
+      listen: update_boot
+
+    - name: Reboot system
+      ansible.builtin.reboot:
+      listen: reboot
+      become: true
