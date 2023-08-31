@@ -1,0 +1,11 @@
+---
+apt_upgrade__cleanup:
+  autoclean: true
+  autoremove: false
+apt_upgrade__update:
+  type: full
+  refresh_cache: true
+  force_apt_get: false
+apt_upgrade__reboot:
+  always: false
+  if_required: true
