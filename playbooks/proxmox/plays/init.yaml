@@ -18,7 +18,7 @@
       args:
         creates: /etc/subscription
 
-    - name: Configure SSH admin user
+    - name: Upgrade packages
       ansible.builtin.import_role:
         name: apt_upgrade
 
