@@ -6,6 +6,7 @@ pve:
 # System maintenance
 apt_upgrade__update:
   type: dist
+  refresh_cache: true
   force_apt_get: true
 
 # System configuration
@@ -31,9 +32,6 @@ remote_user_configuration__ssh:
 ups_configuration__user:
   username: upsmon
   password: "{{ lookup('community.general.bitwarden', 'Proxmox VE system', field='UPS Password') }}"
-
-ups_configuration__nut:
-  mode: standalone
 
 # First setup configuration
 linux__init:

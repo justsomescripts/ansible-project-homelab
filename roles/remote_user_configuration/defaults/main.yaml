@@ -12,6 +12,9 @@ remote_user_configuration__admin:
   password: changeme
   update_password: on_create
   create: false
+  groups:
+    - sudo
+    - users
 
 remote_user_configuration__prompt:
   enabled: false

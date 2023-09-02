@@ -5,6 +5,7 @@ ansible_become_pass: "{{ lookup('community.general.bitwarden', 'Proxmox VE david
 
 # System maintenance
 apt_upgrade__cleanup:
+  autoclean: true
   autoremove: true
 
 # System configuration

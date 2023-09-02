@@ -7,9 +7,7 @@
 - name: Ensure admin user is present
   ansible.builtin.user:
     name: "{{ remote_user_configuration__admin.user }}"
-    groups:
-      - sudo
-      - users
+    groups: "{{ remote_user_configuration__admin.groups }}"
     password: "{{ remote_user_configuration__admin.password | password_hash('sha512') }}"
     update_password: "{{ remote_user_configuration__admin.update_password }}"
   become: true
