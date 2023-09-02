@@ -46,6 +46,12 @@
       tags:
         - ups_configuration
 
+    - name: Configure ZFS event daemon
+      ansible.builtin.import_role:
+        name: zed_configuration
+      tags:
+        - zed_configuration
+
   handlers:
 
     - name: Update kernel boot parameters # noqa no-changed-when
