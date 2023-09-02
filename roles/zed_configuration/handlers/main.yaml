@@ -1,0 +1,7 @@
+---
+- name: Restart ZED service
+  ansible.builtin.service:
+    name: zed
+    state: restarted
+  listen: restart_zed
+  become: true
