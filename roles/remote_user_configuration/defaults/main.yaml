@@ -15,4 +15,8 @@ remote_user_configuration__admin:
 
 remote_user_configuration__prompt:
   enabled: false
-  color_code: "32"
+  color_code: 32
+
+remote_user_configuration__tmux:
+  enabled: false
+  color: green

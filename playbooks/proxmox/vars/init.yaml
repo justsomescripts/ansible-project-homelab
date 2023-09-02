@@ -1,14 +1,2 @@
 ---
 # General update configuration
-apt_upgrade__cleanup:
-  autoclean: true
-  autoremove: true
-
-apt_upgrade__update:
-  type: dist
-  refresh_cache: true
-  force_apt_get: true
-
-apt_upgrade__reboot:
-  always: false
-  if_required: true

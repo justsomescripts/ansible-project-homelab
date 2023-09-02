@@ -1,12 +1,41 @@
 ---
-# Host-specific subscription key
+# Subscription key
 pve:
   subscription_key: "{{ lookup('community.general.bitwarden', 'Proxmox VE Subscription', field='Subscription Key 1 CPU')[0] }}"
 
-# Host-specific UPS configuration
+# System maintenance
+apt_upgrade__update:
+  type: dist
+  force_apt_get: true
+
+# System configuration
+remote_user_configuration__admin:
+  user: david
+  create: true
+  update_password: always
+  password: "{{ lookup('community.general.bitwarden', 'Proxmox VE david', field='password')[0] }}"
+  groups:
+    - sudo
+    - users
+
+remote_user_configuration__ssh:
+  sshport: "1337"
+  sshkey: "{{ lookup('community.general.bitwarden', 'Proxmox VE david', field='SSH Public Key')[0] }}\n"
+  enable_pubkey_auth: true
+  enable_password_auth: false
+  enable_x_forward: false
+  enable_agent_auth: true
+  authorized_keys_dir: /etc/ssh/sudo_authorized_keys
+
+# UPS configuration
 ups_configuration__user:
   username: upsmon
   password: "{{ lookup('community.general.bitwarden', 'Proxmox VE system', field='UPS Password') }}"
 
 ups_configuration__nut:
   mode: standalone
+
+# First setup configuration
+linux__init:
+  ansible_ssh_pass: "{{ lookup('community.general.bitwarden', 'Proxmox VE root', field='password')[0] }}"
+  ansible_port: "22"

@@ -1,12 +1,13 @@
 ---
-# Host-specific system configuration
+# Ansible
 ansible_port: "1337"
 ansible_become_pass: "{{ lookup('community.general.bitwarden', 'Proxmox VE david', field='password')[0] }}"
 
-linux__init:
-  ansible_ssh_pass: "{{ lookup('community.general.bitwarden', 'Proxmox VE root', field='password')[0] }}"
-  ansible_port: "22"
+# System maintenance
+apt_upgrade__cleanup:
+  autoremove: true
 
+# System configuration
 linux__packages:
   - vim
   - tmux
@@ -22,21 +23,3 @@ remote_user_configuration__prompt:
 remote_user_configuration__tmux:
   enabled: true
   color: yellow
-
-remote_user_configuration__admin:
-  user: david
-  create: true
-  update_password: always
-  password: "{{ lookup('community.general.bitwarden', 'Proxmox VE david', field='password')[0] }}"
-  groups:
-    - sudo
-    - users
-
-remote_user_configuration__ssh:
-  sshport: "1337"
-  sshkey: "{{ lookup('community.general.bitwarden', 'Proxmox VE david', field='SSH Public Key')[0] }}\n"
-  enable_pubkey_auth: true
-  enable_password_auth: false
-  enable_x_forward: false
-  enable_agent_auth: true
-  authorized_keys_dir: /etc/ssh/sudo_authorized_keys

@@ -8,7 +8,7 @@
 
     - name: Set kernel boot parameters
       ansible.builtin.copy:
-        content: "{{ kernel_cmdline }}"
+        content: "{{ kernel_cmdline }}\n"
         dest: /etc/kernel/cmdline
         backup: true
         mode: "0644"
