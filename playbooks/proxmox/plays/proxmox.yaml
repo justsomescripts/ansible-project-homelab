@@ -1,8 +1,6 @@
 ---
 - name: Proxmox Virtual Environment
   hosts: proxmox
-  vars_files:
-    - ../vars/proxmox.yaml
   remote_user: "{{ remote_user_configuration__admin.user }}"
   tasks:
 

@@ -3,8 +3,6 @@
 
 - name: Proxmox Virtual Environment
   hosts: proxmox
-  vars_files:
-    - ../vars/init.yaml
   remote_user: root
   become: false
   vars:
