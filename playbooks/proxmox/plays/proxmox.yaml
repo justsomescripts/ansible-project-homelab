@@ -4,53 +4,77 @@
   remote_user: "{{ remote_user_configuration__admin.user }}"
   tasks:
 
-    - name: Set kernel boot parameters
-      ansible.builtin.copy:
-        content: "{{ kernel_cmdline }}\n"
-        dest: /etc/kernel/cmdline
-        backup: true
-        mode: "0644"
-        owner: root
-        group: root
-      when: kernel_cmdline is defined and kernel_cmdline
-      notify:
-        - reboot
-        - update_boot
-      become: true
+    - name: Configure Linux system
       tags:
-        - boot_configuration
+        - linux_config
+      block:
 
-    - name: Ensure default packages are present
-      ansible.builtin.apt:
-        name: "{{ linux__packages }}"
-        update_cache: true
-      become: true
-      tags:
-        - default_packages
+        - name: Set kernel boot parameters
+          ansible.builtin.copy:
+            content: "{{ kernel_cmdline }}\n"
+            dest: /etc/kernel/cmdline
+            backup: true
+            mode: "0644"
+            owner: root
+            group: root
+          when: kernel_cmdline is defined and kernel_cmdline
+          notify:
+            - reboot
+            - update_boot
+          become: true
+          tags:
+            - boot_configuration
 
-    - name: Configure SSH admin user
-      ansible.builtin.import_role:
-        name: remote_user_configuration
-      tags:
-        - remote_user_configuration
+        - name: Ensure default packages are present
+          ansible.builtin.apt:
+            name: "{{ linux__packages }}"
+            update_cache: true
+          become: true
+          tags:
+            - default_packages
 
-    - name: Configure Chrony
-      ansible.builtin.import_role:
-        name: chrony_configuration
-      tags:
-        - chrony_configuration
+        - name: Configure SSH admin user
+          ansible.builtin.import_role:
+            name: remote_user_configuration
+          tags:
+            - remote_user_configuration
 
-    - name: Configure UPS
-      ansible.builtin.import_role:
-        name: ups_configuration
-      tags:
-        - ups_configuration
+        - name: Configure Chrony
+          ansible.builtin.import_role:
+            name: chrony_configuration
+          tags:
+            - chrony_configuration
 
-    - name: Configure ZFS event daemon
-      ansible.builtin.import_role:
-        name: zed_configuration
+        - name: Configure UPS
+          ansible.builtin.import_role:
+            name: ups_configuration
+          tags:
+            - ups_configuration
+
+        - name: Configure ZFS event daemon
+          ansible.builtin.import_role:
+            name: zed_configuration
+          tags:
+            - zed_configuration
+
+    - name: Configure PVE
       tags:
-        - zed_configuration
+        - pve_config
+      block:
+
+        - name: Get list of available groups
+          ansible.builtin.command:
+            cmd: pveum group list --noborder --noheader --output-format json
+          register: pve_groups
+          changed_when: false
+          become: true
+
+        - name: "Create group if it doesn't exist yet: {{ proxmox__system.admin_group.name }}"
+          ansible.builtin.command:
+            cmd: pveum group add "{{ proxmox__system.admin_group.name }}" --comment "{{ proxmox__system.admin_group.comment }}"
+          when: not pve_groups.stdout | from_json | json_query('[*].groupid') is contains(proxmox__system.admin_group.name)
+          changed_when: true
+          become: true
 
   handlers:
 

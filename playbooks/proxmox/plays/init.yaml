@@ -12,7 +12,7 @@
   tasks:
 
     - name: Add subscription key
-      ansible.builtin.command: pvesubscription set {{ pve.subscription_key }}
+      ansible.builtin.command: pvesubscription set {{ proxmox__system.subscription_key }}
       args:
         creates: /etc/subscription
 
