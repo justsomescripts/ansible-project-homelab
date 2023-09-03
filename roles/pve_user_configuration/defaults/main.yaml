@@ -1,0 +1,12 @@
+---
+pve_user_configuration__group:
+  create: true
+  name: vmadmin
+  comment: manage VMs
+
+pve_user_configuration__user:
+  create: true
+  name: user
+  comment: generic user
+  realm: pam
+  mail: mail@example.com

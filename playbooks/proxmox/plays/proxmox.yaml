@@ -6,7 +6,7 @@
 
     - name: Configure Linux system
       tags:
-        - linux_config
+        - linux_system
       block:
 
         - name: Set kernel boot parameters
@@ -59,22 +59,14 @@
 
     - name: Configure PVE
       tags:
-        - pve_config
+        - pve_system
       block:
 
-        - name: Get list of available groups
-          ansible.builtin.command:
-            cmd: pveum group list --noborder --noheader --output-format json
-          register: pve_groups
-          changed_when: false
-          become: true
-
-        - name: "Create group if it doesn't exist yet: {{ proxmox__system.admin_group.name }}"
-          ansible.builtin.command:
-            cmd: pveum group add "{{ proxmox__system.admin_group.name }}" --comment "{{ proxmox__system.admin_group.comment }}"
-          when: not pve_groups.stdout | from_json | json_query('[*].groupid') is contains(proxmox__system.admin_group.name)
-          changed_when: true
-          become: true
+        - name: Configure PVE admin user
+          ansible.builtin.import_role:
+            name: pve_user_configuration
+          tags:
+            - pve_user_configuration
 
   handlers:
 

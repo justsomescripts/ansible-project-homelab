@@ -2,9 +2,6 @@
 # Subscription key
 proxmox__system:
   subscription_key: "{{ lookup('community.general.bitwarden', 'Proxmox VE Subscription', field='Subscription Key 1 CPU')[0] }}"
-  admin_group:
-    name: vmadmin
-    comment: manage VMs
 
 # System maintenance
 apt_upgrade__update:
