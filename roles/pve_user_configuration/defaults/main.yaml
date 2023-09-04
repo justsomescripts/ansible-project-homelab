@@ -7,6 +7,12 @@ pve_user_configuration__group:
 pve_user_configuration__user:
   create: true
   name: user
+  password: changeme
+  realm: pve
+  groups:
+    - vmadmin
+  expire: 0
+  firstname: Firstname
+  lastname: Lastname
   comment: generic user
-  realm: pam
   mail: mail@example.com

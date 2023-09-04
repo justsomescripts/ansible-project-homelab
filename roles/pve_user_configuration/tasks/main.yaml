@@ -5,14 +5,61 @@
 
     - name: Get list of available groups
       ansible.builtin.command:
-        cmd: pveum group list --noborder --noheader --output-format json
+        cmd: >
+          pveum group list
+          --noborder
+          --noheader
+          --output-format json
       register: pve_groups
       changed_when: false
       become: true
 
     - name: "Create group if it doesn't exist yet: {{ pve_user_configuration__group.name }}"
       ansible.builtin.command:
-        cmd: pveum group add "{{ pve_user_configuration__group.name }}" --comment "{{ pve_user_configuration__group.comment }}"
-      when: not pve_groups.stdout | from_json | json_query('[*].groupid') is contains(pve_user_configuration__group.name)
+        cmd: >
+          pveum group {{
+                       'add' if (not pve_groups.stdout | from_json | json_query('[*].groupid')
+                        is contains(pve_user_configuration__group.name))
+                        else 'modify'
+                      }}
+          --comment "{{ pve_user_configuration__group.comment }}"
+      changed_when: true
+      become: true
+
+- name: Create user
+  when: pve_user_configuration__user.create | bool
+  block:
+
+    - name: Get list of available users
+      ansible.builtin.command:
+        cmd: >
+          pveum user list
+          --noborder
+          --noheader
+          --output-format json
+      register: pve_users
+      changed_when: false
+      become: true
+
+    - name: "Create user if it doesn't exist yet: {{ pve_user_configuration__user.name }}"
+      ansible.builtin.command:
+        cmd: >
+          pveum user  {{
+                       'add' if (not pve_users.stdout | from_json | json_query('[*].userid')
+                        is contains(pve_user_configuration__user.name + '@' + pve_user_configuration__user.realm))
+                        else 'modify'
+                      }}
+          "{{ pve_user_configuration__user.name }}@{{ pve_user_configuration__user.realm }}"
+          --firstname "{{ pve_user_configuration__user.firstname }}"
+          --lastname  "{{ pve_user_configuration__user.lastname }}"
+          --email     "{{ pve_user_configuration__user.mail }}"
+          --groups    "{{ pve_user_configuration__user.groups | join(',') }}"
+          --comment   "{{ pve_user_configuration__user.comment }}"
+          --expire    "{{ pve_user_configuration__user.expire }}"
+          {{
+              '--password "' + pve_user_configuration__user.password + '"'
+              if (not pve_users.stdout | from_json | json_query('[*].userid')
+              is contains(pve_user_configuration__user.name + '@' + pve_user_configuration__user.realm))
+          }}
       changed_when: true
       become: true
