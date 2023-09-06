@@ -28,6 +28,20 @@ remote_user_configuration__ssh:
   enable_agent_auth: true
   authorized_keys_dir: /etc/ssh/sudo_authorized_keys
 
+# PVE users and groups
+pve_user_configuration__user:
+  create: true
+  name: admin
+  password: "{{ lookup('community.general.bitwarden', 'Proxmox VE david', field='password')[0] }}"
+  realm: pam
+  groups:
+    - vmadmin
+  expire: 0
+  firstname: David
+  lastname: Gries
+  comment: VM administration
+  mail: infra@dgries.de
+
 # UPS configuration
 ups_configuration__user:
   username: upsmon
