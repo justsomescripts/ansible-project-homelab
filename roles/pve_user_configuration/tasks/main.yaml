@@ -22,7 +22,29 @@
                         is contains(pve_user_configuration__group.name))
                         else 'modify'
                       }}
+          "{{ pve_user_configuration__group.name }}"
           --comment "{{ pve_user_configuration__group.comment }}"
+      changed_when: true
+      become: true
+
+- name: Modify ACL
+  when: pve_user_configuration__acl.create | bool
+  block:
+
+    - name: Update ACL
+      ansible.builtin.command:
+        cmd: >
+          pveum acl modify "{{ pve_user_configuration__acl.path }}"
+          {{
+              '--groups "' + pve_user_configuration__acl.groups | join(',') + '"'
+              if pve_user_configuration__acl.groups
+          }}
+          {{
+              '--users "' + pve_user_configuration__acl.users | join(',') + '"'
+              if pve_user_configuration__acl.users
+          }}
+          --roles     "{{ pve_user_configuration__acl.roles | join(',') }}"
+          --propagate "{{ '1' if pve_user_configuration__acl.propagate else '0' }}"
       changed_when: true
       become: true
 

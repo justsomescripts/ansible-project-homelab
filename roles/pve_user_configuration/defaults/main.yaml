@@ -4,6 +4,16 @@ pve_user_configuration__group:
   name: vmadmin
   comment: manage VMs
 
+pve_user_configuration__acl:
+  create: true
+  path: /
+  roles:
+    - PVEVMAdmin
+  propagate: true
+  groups:
+    - vmadmin
+  users: false
+
 pve_user_configuration__user:
   create: true
   name: user
