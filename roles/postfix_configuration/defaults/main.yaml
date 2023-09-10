@@ -1,0 +1,26 @@
+---
+postfix_configuration__relay:
+  fqdn: smtp.example.com
+  port: 465
+
+postfix_configuration__sender:
+  username: mail@example.com
+  mail: name@example.com
+  name: name
+  local_user: root
+  canonical_file: /etc/postfix/sender_canonical
+  alias_file: /etc/aliases
+  header_checks_file: /etc/postfix/smtp_header_checks
+
+postfix_configuration__smtp:
+  credentials:
+    username: root
+    password: changeme
+    file: /etc/postfix/smtp_credentials
+    options: noanonymous
+  tls:
+    enabled: true
+    enforced: true
+    security_level: encrypt
+    wrappermode_enabled: true
+    ca_file: /etc/ssl/certs/ca-certificates.crt
