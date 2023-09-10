@@ -45,6 +45,12 @@
           tags:
             - chrony_configuration
 
+        - name: Configure Postfix
+          ansible.builtin.import_role:
+            name: postfix_configuration
+          tags:
+            - postfix_configuration
+
         - name: Configure UPS
           ansible.builtin.import_role:
             name: ups_configuration
