@@ -37,6 +37,7 @@
     owner: root
     group: root
   become: true
+  notify: restart_postfix
 
 - name: Configure Postfix Credentials
   ansible.builtin.template:
