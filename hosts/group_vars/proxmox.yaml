@@ -28,6 +28,11 @@ remote_user_configuration__ssh:
   enable_agent_auth: true
   authorized_keys_dir: /etc/ssh/sudo_authorized_keys
 
+zed_configuration__notify:
+  verbose: true
+  zfs_data_event: true
+  interval: 3600
+
 # PVE users and groups
 pve_user_configuration__user:
   create: true
