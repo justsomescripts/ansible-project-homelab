@@ -6,9 +6,9 @@ ZED_NOTIFY_INTERVAL_SECS={{ zed_configuration__notify.interval }}
 ZED_NOTIFY_VERBOSE={{ '1' if zed_configuration__notify.verbose else '0' }}
 ZED_NOTIFY_DATA={{ '1' if zed_configuration__notify.zfs_data_event else '' }}
 
-ZED_USE_ENCLOSURE_LEDS={{ '1' if zed_configuration__enclosurey.use_leds else '' }}
+ZED_USE_ENCLOSURE_LEDS={{ '1' if zed_configuration__enclosure.use_leds else '' }}
 
-ZED_SCRUB_AFTER_RESILVER={{ '1' if zed_configuration__enclosurey.use_leds else '' }}
+ZED_SCRUB_AFTER_RESILVER={{ '1' if zed_configuration__enclosure.use_leds else '' }}
 
 {{ '' if zed_configuration__syslog.subclass_include.enabled else '#' }}ZED_SYSLOG_SUBCLASS_INCLUDE="{{ zed_configuration__syslog.subclass_include.content }}"
 {{ '' if zed_configuration__syslog.subclass_exclude.enabled else '#' }}ZED_SYSLOG_SUBCLASS_EXCLUDE="{{ zed_configuration__syslog.subclass_exclude.content }}"
