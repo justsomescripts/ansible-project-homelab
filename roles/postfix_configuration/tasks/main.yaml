@@ -37,7 +37,6 @@
     owner: root
     group: root
   become: true
-  notify: postmap_sender
 
 - name: Configure Postfix Credentials
   ansible.builtin.template:
