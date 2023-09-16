@@ -50,7 +50,7 @@ pve_user_configuration__user:
 # UPS configuration
 ups_configuration__user:
   username: upsmon
-  password: "{{ lookup('community.general.bitwarden', 'Proxmox VE system', field='UPS Password') }}"
+  password: "{{ lookup('community.general.bitwarden', 'Proxmox VE system', field='UPS Password')[0] }}"
 
 # First setup configuration
 linux__init:
