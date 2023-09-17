@@ -1,0 +1,9 @@
+---
+- name: Proxmox Virtual Environment
+  hosts: linux
+  tasks:
+
+    - name: Upgrade packages
+      ansible.builtin.import_role:
+        name: apt_upgrade
+      when: ansible_os_family == 'Debian'
