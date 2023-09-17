@@ -1,0 +1,2 @@
+APT::Periodic::Update-Package-Lists "{{ '1' if unattended_upgrades_configuration__autoupgrade.cache else '0' }}";
+APT::Periodic::Unattended-Upgrade "{{ '1' if unattended_upgrades_configuration__autoupgrade.packages else '0' }}";
