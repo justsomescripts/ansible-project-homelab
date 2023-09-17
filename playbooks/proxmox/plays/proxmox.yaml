@@ -63,6 +63,12 @@
           tags:
             - zed_configuration
 
+        - name: Configure automatc updates
+          ansible.builtin.import_role:
+            name: unattended_upgrades_configuration
+          tags:
+            - update_configuration
+
     - name: Configure PVE
       tags:
         - pve_system
