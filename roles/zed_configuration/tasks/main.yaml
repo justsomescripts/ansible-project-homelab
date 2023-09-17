@@ -1,7 +1,7 @@
 ---
 - name: Configure ZED
   ansible.builtin.template:
-    src: ../templates/zed.rc.j2
+    src: zed.rc.j2
     dest: /etc/zfs/zed.d/zed.rc
     owner: root
     group: root

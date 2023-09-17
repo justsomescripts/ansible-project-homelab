@@ -14,7 +14,7 @@
       changed_when: false
       become: true
 
-    - name: "Create group if it doesn't exist yet: {{ pve_user_configuration__group.name }}"
+    - name: "Uptade group {{ pve_user_configuration__group.name }}"
       ansible.builtin.command:
         cmd: >
           pveum group {{
@@ -63,7 +63,7 @@
       changed_when: false
       become: true
 
-    - name: "Create user if it doesn't exist yet: {{ pve_user_configuration__user.name }}"
+    - name: "Update user {{ pve_user_configuration__user.name }}"
       ansible.builtin.command:
         cmd: >
           pveum user  {{

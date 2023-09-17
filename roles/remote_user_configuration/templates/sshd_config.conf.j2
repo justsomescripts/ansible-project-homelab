@@ -1,3 +1,5 @@
+# Managed by Ansible
+
 Port {{ remote_user_configuration__ssh.sshport }}
 PubkeyAuthentication {{ 'yes' if remote_user_configuration__ssh.enable_pubkey_auth | bool else 'no' }}
 PasswordAuthentication {{ 'yes' if remote_user_configuration__ssh.enable_password_auth | bool else 'no' }}

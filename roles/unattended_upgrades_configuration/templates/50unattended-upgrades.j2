@@ -1,3 +1,5 @@
+// Managed by Ansible
+
 Unattended-Upgrade::Origins-Pattern {
 {% for origin in unattended_upgrades_configuration__packages.origins %}
     "origin={{ origin.origin }},codename={{ origin.codename}},label={{ origin.label }}";
