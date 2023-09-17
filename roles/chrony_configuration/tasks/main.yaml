@@ -12,7 +12,7 @@
     owner: root
     group: root
   become: true
-  notify: restart_chrony
+  notify: reload_sources
 
 - name: Ensure Chrony is running after initialization
   ansible.builtin.service:

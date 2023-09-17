@@ -1,4 +1,11 @@
 ---
+- name: Reload Chrony sources
+  ansible.builtin.command:
+    cmd: chronyc reload sources
+  become: true
+  changed_when: true
+  listen: reload_sources
+
 - name: Restart Chrony after initialization
   ansible.builtin.service:
     name: chrony
