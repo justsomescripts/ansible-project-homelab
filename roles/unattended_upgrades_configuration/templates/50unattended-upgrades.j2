@@ -21,7 +21,8 @@ Unattended-Upgrade::Remove-New-Unused-Dependencies "{{ 'true' if unattended_upgr
 Unattended-Upgrade::Remove-Unused-Dependencies "{{ 'true' if unattended_upgrades_configuration__dpkg.autoremove.unused else 'false '}}";
 Unattended-Upgrade::Allow-downgrade "{{ 'true' if unattended_upgrades_configuration__dpkg.allow_downgrade else 'false '}}";
 
-Unattended-Upgrade::Mail "{{ unattended_upgrades_configuration__report.mail }}";
+Unattended-Upgrade::Mail "{{ unattended_upgrades_configuration__report.mail.user }}";
+Unattended-Upgrade::Sender "{{ unattended_upgrades_configuration__report.mail.sender }}";
 Unattended-Upgrade::MailReport "{{ unattended_upgrades_configuration__report.level }}";
 Unattended-Upgrade::Verbose "{{ 'true' if unattended_upgrades_configuration__report.verbose else 'false' }}";
 Unattended-Upgrade::Debug "{{ 'true' if unattended_upgrades_configuration__report.debug else 'false' }}";

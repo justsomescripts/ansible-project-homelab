@@ -25,6 +25,14 @@ remote_user_configuration__tmux:
   enabled: true
   color: yellow
 
+unattended_upgrades_configuration__report:
+  mail:
+    user: root # send to default alias for root
+    sender: infra@dgries.de
+  level: on-change
+  verbose: false
+  debug: false
+
 postfix_configuration__relay:
   fqdn: smtp.mailbox.org
   port: 465
