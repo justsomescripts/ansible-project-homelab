@@ -1,5 +1,5 @@
 ---
-zed_configuration__email:
+zed_configuration__mail:
   recipient: root
   program: mail
   options: -s '@SUBJECT@' @ADDRESS@
