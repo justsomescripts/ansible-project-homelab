@@ -2,6 +2,14 @@
 unattended_upgrades_configuration__autoupgrade:
   cache: true
   packages: false
+  days:
+    - Mon
+    - Tue
+    - Wed
+    - Thu
+    - Fri
+    - Sat
+    - Sun
 
 unattended_upgrades_configuration__packages:
   origins:

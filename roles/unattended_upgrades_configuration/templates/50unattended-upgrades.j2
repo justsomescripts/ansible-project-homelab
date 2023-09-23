@@ -2,7 +2,7 @@
 
 Unattended-Upgrade::Origins-Pattern {
 {% for origin in unattended_upgrades_configuration__packages.origins %}
-    "origin={{ origin.origin }},codename={{ origin.codename}},label={{ origin.label }}";
+    "origin={{ origin.origin }},codename={{ origin.codename}}{{ ',label=' + origin.label if origin.label }}";
 {% endfor %}
 };
 
@@ -15,6 +15,7 @@ Unattended-Upgrade::Package-Blacklist {
 Unattended-Upgrade::AutoFixInterruptedDpkg "{{ 'true' if unattended_upgrades_configuration__dpkg.autofix_interrupted else 'false' }}";
 Unattended-Upgrade::MinimalSteps "{{ 'true' if unattended_upgrades_configuration__dpkg.minimal_steps else 'false' }}";
 Unattended-Upgrade::InstallOnShutdown "{{ 'true' if unattended_upgrades_configuration__dpkg.install_on_shutdown else 'false' }}";
+Unattended-Upgrade::Update-Days {{ '{"' + unattended_upgrades_configuration__autoupgrade.days | join('";"') + '"}' }};
 
 Unattended-Upgrade::Remove-Unused-Kernel-Packages "{{ 'true' if unattended_upgrades_configuration__dpkg.autoremove.kernel else 'false '}}";
 Unattended-Upgrade::Remove-New-Unused-Dependencies "{{ 'true' if unattended_upgrades_configuration__dpkg.autoremove.new_unused else 'false '}}";
