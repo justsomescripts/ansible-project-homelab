@@ -18,12 +18,12 @@ hardware:
 
 proxmox:
   hosts:
-    pve.host.dgries.de:
+    pve.host.dgries.internal:
 
 truenas:
   hosts:
-    tns.host.dgries.de:
+    tns.host.dgries.internal:
 
 pihole:
   hosts:
-    pi.host.dgries.de:
+    pi.host.dgries.internal:
