@@ -1,0 +1,21 @@
+---
+- name: Configure ProxMox (initial install)
+  ansible.builtin.import_playbook: playbooks/proxmox/plays/init.yaml
+  tags:
+    - init
+    - init.proxmox
+    - never
+
+- name: Upgrade System
+  ansible.builtin.import_playbook: playbooks/maintenance/plays/system_upgrade.yaml
+  tags:
+    - update
+    - upgrade
+    - never
+
+- name: Configure ProxMox
+  ansible.builtin.import_playbook: playbooks/proxmox/plays/proxmox.yaml
+  tags:
+    - proxmox
+    - init
+    - init.proxmox
