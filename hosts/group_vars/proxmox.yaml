@@ -76,5 +76,5 @@ ups_configuration__user:
 
 # First setup configuration
 linux__init:
-  ansible_ssh_pass: "{{ lookup('community.general.bitwarden', 'Proxmox VE root', field='password')[0] }}"
+  ansible_ssh_pass: "{{ lookup('community.general.bitwarden', 'Proxmox VE system', field='password')[0] }}"
   ansible_port: "22"
