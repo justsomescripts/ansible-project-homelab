@@ -8,6 +8,4 @@ apt_upgrade__update:
   refresh_cache: true
   force_apt_get: false
 
-apt_upgrade__reboot:
-  always: false
-  if_required: true
+apt_upgrade__reboot: if_required
