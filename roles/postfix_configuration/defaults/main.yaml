@@ -4,8 +4,7 @@ postfix_configuration__relay:
   port: 465
 
 postfix_configuration__sender:
-  username: mail@example.com
-  mail: name@example.com
+  mail: mail@example.com
   name: name
   local_user: root
   canonical_file: /etc/postfix/sender_canonical
@@ -14,7 +13,7 @@ postfix_configuration__sender:
 
 postfix_configuration__smtp:
   credentials:
-    username: root
+    username: name@example.com
     password: changeme
     file: /etc/postfix/smtp_credentials
     options: noanonymous
