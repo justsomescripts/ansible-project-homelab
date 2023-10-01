@@ -1,5 +1,12 @@
 ---
-- name: Configure ProxMox (initial install)
+# ================================================================================== #
+# Author:  David Gries <mail@dgries.de>                                              #
+# Project: homelab.ansible                                                           #
+# License: MIT                                                                       #
+# Purpose: initialize / update homelab site and declare configuration                #
+# ================================================================================== #
+
+- name: Configure Proxmox (initial install)
   ansible.builtin.import_playbook: playbooks/proxmox/plays/init.yaml
   tags:
     - init
@@ -13,7 +20,7 @@
     - upgrade
     - never
 
-- name: Configure ProxMox
+- name: Configure Proxmox
   ansible.builtin.import_playbook: playbooks/proxmox/plays/proxmox.yaml
   tags:
     - proxmox
