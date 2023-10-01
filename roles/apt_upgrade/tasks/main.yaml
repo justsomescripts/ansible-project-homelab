@@ -10,12 +10,14 @@
 
 - name: Check if a reboot is required
   ansible.builtin.stat:
+    # https://www.debian.org/doc/debian-policy/ch-opersys.html#signaling-that-a-reboot-is-required
     path: /var/run/reboot-required
   register: reboot_required
 
 - name: Reboot system
   ansible.builtin.reboot:
+  # only reboot if reboot is required or config set to 'always'
   when: >
-    (reboot_required.stat.exists and apt_upgrade__reboot.if_required) or
-    apt_upgrade__reboot.always
+    (reboot_required.stat.exists and apt_upgrade__reboot == 'if_required') or
+    apt_upgrade__reboot == 'always'
   become: true
