@@ -41,6 +41,7 @@ chrony_configuration__time:
             name: chrony_configuration
           tags:
             - chrony_configuration
+...
 ```
 
 ## 📜 License
