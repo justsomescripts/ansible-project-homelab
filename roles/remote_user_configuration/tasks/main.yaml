@@ -48,10 +48,10 @@
     mode: "0600"
     owner: "{{ remote_user_configuration__admin.user }}"
     group: "{{ remote_user_configuration__admin.user }}"
-  when: remote_user_configuration__ssh.enable_pubkey_auth | bool
+  when: remote_user_configuration__ssh.pubkey_auth_enabled | bool
 
 - name: Configure PAM agent auth
-  when: (remote_user_configuration__ssh.enable_pubkey_auth | bool) and (remote_user_configuration__ssh.enable_agent_auth | bool)
+  when: (remote_user_configuration__ssh.pubkey_auth_enabled | bool) and (remote_user_configuration__ssh.agent_auth.enabled | bool)
   become: true
   block:
 

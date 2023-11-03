@@ -1,11 +1,12 @@
 ---
 remote_user_configuration__ssh:
-  sshport: "22"
-  enable_pubkey_auth: true
-  enable_password_auth: false
-  enable_x_forward: false
-  enable_agent_auth: true
-  authorized_keys_dir: /etc/ssh/sudo_authorized_keys
+  sshport: 22
+  pubkey_auth_enabled: true
+  password_auth_enabled: false
+  x_forward_enabled: false
+  agent_auth:
+    enabled: true
+    authorized_keys_dir: /etc/ssh/sudo_authorized_keys
 
 remote_user_configuration__admin:
   user: root

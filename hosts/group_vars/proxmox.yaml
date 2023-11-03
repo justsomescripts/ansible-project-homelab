@@ -22,11 +22,12 @@ remote_user_configuration__admin:
 remote_user_configuration__ssh:
   sshport: "1337"
   sshkey: "{{ lookup('community.general.bitwarden', 'Proxmox VE david', field='SSH Public Key')[0] }}\n"
-  enable_pubkey_auth: true
-  enable_password_auth: false
-  enable_x_forward: false
-  enable_agent_auth: true
-  authorized_keys_dir: /etc/ssh/sudo_authorized_keys
+  pubkey_auth_enabled: true
+  password_auth_enabled: false
+  x_forward_enabled: false
+  agent_auth:
+    enabled: true
+    authorized_keys_dir: /etc/ssh/sudo_authorized_keys
 
 zed_configuration__notify:
   verbose: true
