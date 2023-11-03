@@ -12,25 +12,25 @@ Unattended-Upgrade::Package-Blacklist {
 {% endfor %}
 };
 
-Unattended-Upgrade::AutoFixInterruptedDpkg "{{ 'true' if unattended_upgrades_configuration__dpkg.autofix_interrupted else 'false' }}";
-Unattended-Upgrade::MinimalSteps "{{ 'true' if unattended_upgrades_configuration__dpkg.minimal_steps else 'false' }}";
-Unattended-Upgrade::InstallOnShutdown "{{ 'true' if unattended_upgrades_configuration__dpkg.install_on_shutdown else 'false' }}";
+Unattended-Upgrade::AutoFixInterruptedDpkg "{{ unattended_upgrades_configuration__dpkg.autofix_interrupted | lower }}";
+Unattended-Upgrade::MinimalSteps "{{ unattended_upgrades_configuration__dpkg.minimal_steps | lower }}";
+Unattended-Upgrade::InstallOnShutdown "{{ unattended_upgrades_configuration__dpkg.install_on_shutdown | lower }}";
 Unattended-Upgrade::Update-Days {{ '{"' + unattended_upgrades_configuration__autoupgrade.days | join('";"') + '"}' }};
 
-Unattended-Upgrade::Remove-Unused-Kernel-Packages "{{ 'true' if unattended_upgrades_configuration__dpkg.autoremove.kernel else 'false '}}";
-Unattended-Upgrade::Remove-New-Unused-Dependencies "{{ 'true' if unattended_upgrades_configuration__dpkg.autoremove.new_unused else 'false '}}";
-Unattended-Upgrade::Remove-Unused-Dependencies "{{ 'true' if unattended_upgrades_configuration__dpkg.autoremove.unused else 'false '}}";
-Unattended-Upgrade::Allow-downgrade "{{ 'true' if unattended_upgrades_configuration__dpkg.allow_downgrade else 'false '}}";
+Unattended-Upgrade::Remove-Unused-Kernel-Packages "{{ unattended_upgrades_configuration__dpkg.autoremove.kernel | lower }}";
+Unattended-Upgrade::Remove-New-Unused-Dependencies "{{ unattended_upgrades_configuration__dpkg.autoremove.new_unused | lower }}";
+Unattended-Upgrade::Remove-Unused-Dependencies "{{ unattended_upgrades_configuration__dpkg.autoremove.unused | lower }}";
+Unattended-Upgrade::Allow-downgrade "{{ unattended_upgrades_configuration__dpkg.allow_downgrade | lower }}";
 
 Unattended-Upgrade::Mail "{{ unattended_upgrades_configuration__report.mail.user }}";
 Unattended-Upgrade::Sender "{{ unattended_upgrades_configuration__report.mail.sender }}";
 Unattended-Upgrade::MailReport "{{ unattended_upgrades_configuration__report.level }}";
-Unattended-Upgrade::Verbose "{{ 'true' if unattended_upgrades_configuration__report.verbose else 'false' }}";
-Unattended-Upgrade::Debug "{{ 'true' if unattended_upgrades_configuration__report.debug else 'false' }}";
+Unattended-Upgrade::Verbose "{{ unattended_upgrades_configuration__report.verbose | lower }}";
+Unattended-Upgrade::Debug "{{ unattended_upgrades_configuration__report.debug | lower }}";
 
-Unattended-Upgrade::Automatic-Reboot "{{ 'true' if unattended_upgrades_configuration__system.auto_reboot.enabled else 'false' }}";
-Unattended-Upgrade::Automatic-Reboot-WithUsers "{{ 'true' if unattended_upgrades_configuration__system.auto_reboot.enabled_withusers else 'false' }}";
+Unattended-Upgrade::Automatic-Reboot "{{ unattended_upgrades_configuration__system.auto_reboot.enabled | lower }}";
+Unattended-Upgrade::Automatic-Reboot-WithUsers "{{ unattended_upgrades_configuration__system.auto_reboot.enabled_withusers | lower }}";
 Unattended-Upgrade::Automatic-Reboot-Time "{{ unattended_upgrades_configuration__system.auto_reboot.time }}";
 
-Unattended-Upgrade::SyslogEnable "{{ 'true' if unattended_upgrades_configuration__system.syslog.enabled else 'false' }}";
+Unattended-Upgrade::SyslogEnable "{{ unattended_upgrades_configuration__system.syslog.enabled | lower }}";
 Unattended-Upgrade::SyslogFacility "{{ unattended_upgrades_configuration__system.syslog.facility }}";
