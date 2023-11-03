@@ -1,7 +1,7 @@
 # Managed by Ansible
 
 Port {{ remote_user_configuration__ssh.sshport }}
-PubkeyAuthentication {{ 'yes' if remote_user_configuration__ssh.enable_pubkey_auth | bool else 'no' }}
-PasswordAuthentication {{ 'yes' if remote_user_configuration__ssh.enable_password_auth | bool else 'no' }}
-X11Forwarding {{ 'yes' if remote_user_configuration__ssh.enable_x_forward | bool else 'no' }}
+PubkeyAuthentication {{ 'yes' if remote_user_configuration__ssh.pubkey_auth_enabled | bool else 'no' }}
+PasswordAuthentication {{ 'yes' if remote_user_configuration__ssh.password_auth_enabled | bool else 'no' }}
+X11Forwarding {{ 'yes' if remote_user_configuration__ssh.x_forward_enabled | bool else 'no' }}
 AllowUsers {{ remote_user_configuration__admin.user }}
