@@ -4,7 +4,6 @@ Create PVE users and assign privileges. Supports both `PAM` and `PVE` realms.
 
 ## 📋 Requirements
 
-* [ansible.builtin.user](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/user_module.html)
 * [ansible.builtin.command](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/command_module.html)
 
 ## 🧩 Variables
