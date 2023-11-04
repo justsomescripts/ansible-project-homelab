@@ -69,7 +69,7 @@
 
     - name: Update PAM sudo config
       ansible.builtin.lineinfile:
-        line: auth sufficient pam_ssh_agent_auth.so file={{ remote_user_configuration__ssh.authorized_keys_dir }}
+        line: auth sufficient pam_ssh_agent_auth.so file={{ remote_user_configuration__ssh.agent_auth.authorized_keys_dir }}
         path: /etc/pam.d/sudo
         insertbefore: '^@include common-auth$'
 
@@ -80,7 +80,7 @@
 
     - name: Update PAM sudo-i config
       ansible.builtin.lineinfile:
-        line: auth sufficient pam_ssh_agent_auth.so file={{ remote_user_configuration__ssh.authorized_keys_dir }}
+        line: auth sufficient pam_ssh_agent_auth.so file={{ remote_user_configuration__ssh.agent_auth.authorized_keys_dir }}
         path: /etc/pam.d/sudo-i
         insertbefore: '^@include common-auth$'
       when: sudo_i.stat.exists
