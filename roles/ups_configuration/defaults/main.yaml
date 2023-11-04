@@ -13,7 +13,7 @@ ups_configuration__ups:
   port: auto
 
 ups_configuration__upsd:
-  upsmon: master
+  upsmon: primary
   actions: SET
   instcmds: ALL
 
@@ -31,4 +31,4 @@ ups_configuration__upsmon:
   monitor:
     system: "{{ ups_configuration__ups.name }}@localhost" # Eaton3S@localhost
     powervalue: 1
-    type: master
+    type: primary
