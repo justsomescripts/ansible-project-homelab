@@ -1,4 +1,9 @@
 ---
+- name: Install Zfs Event Daemon
+  ansible.builtin.package:
+    name: zfs-zed
+  become: true
+
 - name: Configure ZED
   ansible.builtin.template:
     src: zed.rc.j2
