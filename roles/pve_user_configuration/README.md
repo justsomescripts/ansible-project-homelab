@@ -1,6 +1,6 @@
 # Role -  pve_user_configuration
 
-Create PVE users and assign privileges. Supports both `PAM` and `PVE` realms.
+Create [PVE users](https://pve.proxmox.com/pve-docs/chapter-pveum.html) and assign privileges. Supports both `PAM` and `PVE` realms.
 
 ## 📋 Requirements
 
