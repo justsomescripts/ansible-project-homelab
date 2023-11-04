@@ -43,6 +43,7 @@ unattended_upgrades_configuration__report:
   debug: false
 
 unattended_upgrades_configuration__system:
+  restart_daemons: true
   auto_reboot:
     enabled: false
     enabled_withusers: false
