@@ -1,4 +1,4 @@
-# Role -  apt_upgrade
+# Role - zed_configuration
 
 Install and configure [ZFS Event Daemon](https://packages.debian.org/bookworm/zfs-zed).
 
