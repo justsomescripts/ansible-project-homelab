@@ -10,7 +10,7 @@ ZED_NOTIFY_DATA={{ '1' if zed_configuration__notify.zfs_data_event else '' }}
 
 ZED_USE_ENCLOSURE_LEDS={{ '1' if zed_configuration__enclosure.use_leds else '' }}
 
-ZED_SCRUB_AFTER_RESILVER={{ '1' if zed_configuration__enclosure.use_leds else '' }}
+ZED_SCRUB_AFTER_RESILVER={{ '1' if zed_configuration__scrub.after_resilver else '' }}
 
 {{ '' if zed_configuration__syslog.subclass_include.enabled else '#' }}ZED_SYSLOG_SUBCLASS_INCLUDE="{{ zed_configuration__syslog.subclass_include.content }}"
 {{ '' if zed_configuration__syslog.subclass_exclude.enabled else '#' }}ZED_SYSLOG_SUBCLASS_EXCLUDE="{{ zed_configuration__syslog.subclass_exclude.content }}"
