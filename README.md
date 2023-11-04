@@ -151,4 +151,4 @@ David Gries - [@dgries](https://www.linkedin.com/in/dgries/) - mail@dgries.de
 [issues-shield]: https://img.shields.io/github/issues/justsomescripts/homelab.ansible.svg?style=for-the-badge
 [issues-url]: https://github.com/justsomescripts/homelab.ansible/issues
 [license-shield]: https://img.shields.io/github/license/justsomescripts/homelab.ansible.svg?style=for-the-badge
-[license-url]: https://github.com/justsomescripts/homelab.ansible/blob/master/LICENSE.txt
+[license-url]: https://github.com/justsomescripts/homelab.ansible/blob/main/LICENSE
