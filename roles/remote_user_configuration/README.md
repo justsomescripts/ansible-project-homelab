@@ -1,6 +1,6 @@
-# Role -  pve_user_configuration
+# Role -  remote_user_configuration
 
-Create PVE users and assign privileges. Supports both `PAM` and `PVE` realms.
+Create Linux users, assign privileges and configure remote access over SSH.
 
 ## 📋 Requirements
 
