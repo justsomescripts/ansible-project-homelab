@@ -68,7 +68,6 @@ ups_configuration__ups:
             name: ups_configuration
           tags:
             - ups_configuration
-
 ...
 ```
 
