@@ -38,17 +38,17 @@ Create Linux users, assign privileges and configure remote access over SSH.
 ---
 # group_vars
 remote_user_configuration__admin:
-  user: david
+  user: "{{ lookup('community.general.bitwarden', 'Proxmox VE admin', field='username')[0] }}"
   create: true
   update_password: always
-  password: "{{ lookup('community.general.bitwarden', 'Proxmox VE david', field='password')[0] }}"
+  password: "{{ lookup('community.general.bitwarden', 'Proxmox VE admin', field='password')[0] }}"
   groups:
     - sudo
     - users
 
 remote_user_configuration__ssh:
   sshport: "1337"
-  sshkey: "{{ lookup('community.general.bitwarden', 'Proxmox VE david', field='SSH Public Key')[0] }}\n"
+  sshkey: "{{ lookup('community.general.bitwarden', 'Proxmox VE admin', field='SSH Public Key')[0] }}\n"
   pubkey_auth_enabled: true
   password_auth_enabled: false
   x_forward_enabled: false

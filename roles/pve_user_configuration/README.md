@@ -38,7 +38,7 @@ Create [PVE users](https://pve.proxmox.com/pve-docs/chapter-pveum.html) and assi
 pve_user_configuration__user:
   create: true
   name: admin
-  password: "{{ lookup('community.general.bitwarden', 'Proxmox VE david', field='password')[0] }}"
+  password: "{{ lookup('community.general.bitwarden', 'Proxmox VE admin', field='password')[0] }}"
   realm: pam
   groups:
     - vmadmin
