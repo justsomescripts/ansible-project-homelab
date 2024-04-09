@@ -97,17 +97,21 @@ ansible-playbook site.yaml --tags upgrade              # upgrade all systems
 <!-- ROADMAP -->
 ## 🛣 Roadmap
 
+- [ ] Systemd-nspawn containers on TrueNAS Scale (Jailmaker)
+- [ ] Centralized monitoring/logging
+- [ ] Migrate Nextcloud to systemd-nspawn (currently Scale app)
+- [ ] Migrate gitea to systemd-nspawn (currently Scale app)
+- [ ] Migrate Paperless-NGX to systemd-nspawn (currently Scale app)
+- [ ] Migrate external proxy (FRP) to simple tunnel (Wireguard)
 
-- [ ] Proxmox
-    - [ ] [Ubuntu Cloud image](https://cloud-images.ubuntu.com/) VM template
-    - [ ] VM storage backend (probably [Ceph](https://pve.proxmox.com/wiki/Deploy_Hyper-Converged_Ceph_Cluster))
-    - [ ] [Proxmox Backup Server](https://www.proxmox.com/de/proxmox-backup-server/uebersicht)
-- [ ] [Nextcloud](https://docs.nextcloud.com/server/latest/admin_manual/installation/) ([currently on TrueNAS Scale](https://truecharts.org/charts/stable/nextcloud/))
-    - [ ] Performance optimization
-    - [ ] Automated apps setup
-- [ ] Kubernetes
-    - [ ] Setup [RKE2](https://docs.rke2.io/)
-    - [ ] Setup [Longhorn](https://longhorn.io/) storage
+### Not planned due to introduction of systemd-nspawn on TrueNAS Scale
+- [ ] ~~Proxmox~~
+    - [ ] ~~[Ubuntu Cloud image](https://cloud-images.ubuntu.com/) VM template~~
+    - [ ] ~~VM storage backend (probably [Ceph](https://pve.proxmox.com/wiki/Deploy_Hyper-Converged_Ceph_Cluster))~~
+    - [ ] ~~[Proxmox Backup Server](https://www.proxmox.com/de/proxmox-backup-server/uebersicht)~~
+- [ ] ~~Kubernetes~~
+    - [ ] ~~Setup [RKE2](https://docs.rke2.io/)~~
+    - [ ] ~~Setup [Longhorn](https://longhorn.io/) storage~~
 
 See the [open issues](https://github.com/justsomescripts/homelab.ansible/issues) for a full list of proposed features (and known issues).
 
