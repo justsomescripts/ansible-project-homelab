@@ -113,7 +113,7 @@ ansible-playbook site.yaml --tags upgrade              # upgrade all systems
     - [ ] ~~Setup [RKE2](https://docs.rke2.io/)~~
     - [ ] ~~Setup [Longhorn](https://longhorn.io/) storage~~
 
-See the [open issues](https://github.com/justsomescripts/homelab.ansible/issues) for a full list of proposed features (and known issues).
+See the [open issues](https://github.com/justsomescripts/ansible-homelab/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -121,7 +121,7 @@ See the [open issues](https://github.com/justsomescripts/homelab.ansible/issues)
 
 Although this is project is specifically targeted to my personal setup and probably
 not re-used, contributions are *greatly appreciated*. So if you have any suggestions
-for improvements or fixes, feel free to open an [issue](https://github.com/justsomescripts/homelab.ansible/issues) or a [pull request](https://github.com/justsomescripts/homelab.ansible/pulls)
+for improvements or fixes, feel free to open an [issue](https://github.com/justsomescripts/ansible-homelab/issues) or a [pull request](https://github.com/justsomescripts/ansible-homelab/pulls)
 
 1. Fork the Project
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
@@ -146,13 +146,13 @@ David Gries - [@dgries](https://www.linkedin.com/in/dgries/) - mail@dgries.de
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-[contributors-shield]: https://img.shields.io/github/contributors/justsomescripts/homelab.ansible.svg?style=for-the-badge
-[contributors-url]: https://github.com/justsomescripts/homelab.ansible/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/justsomescripts/homelab.ansible.svg?style=for-the-badge
-[forks-url]: https://github.com/justsomescripts/homelab.ansible/network/members
-[stars-shield]: https://img.shields.io/github/stars/justsomescripts/homelab.ansible.svg?style=for-the-badge
-[stars-url]: https://github.com/justsomescripts/homelab.ansible/stargazers
-[issues-shield]: https://img.shields.io/github/issues/justsomescripts/homelab.ansible.svg?style=for-the-badge
-[issues-url]: https://github.com/justsomescripts/homelab.ansible/issues
-[license-shield]: https://img.shields.io/github/license/justsomescripts/homelab.ansible.svg?style=for-the-badge
-[license-url]: https://github.com/justsomescripts/homelab.ansible/blob/main/LICENSE
+[contributors-shield]: https://img.shields.io/github/contributors/justsomescripts/ansible-homelab.svg?style=for-the-badge
+[contributors-url]: https://github.com/justsomescripts/ansible-homelab/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/justsomescripts/ansible-homelab.svg?style=for-the-badge
+[forks-url]: https://github.com/justsomescripts/ansible-homelab/network/members
+[stars-shield]: https://img.shields.io/github/stars/justsomescripts/ansible-homelab.svg?style=for-the-badge
+[stars-url]: https://github.com/justsomescripts/ansible-homelab/stargazers
+[issues-shield]: https://img.shields.io/github/issues/justsomescripts/ansible-homelab.svg?style=for-the-badge
+[issues-url]: https://github.com/justsomescripts/ansible-homelab/issues
+[license-shield]: https://img.shields.io/github/license/justsomescripts/ansible-homelab.svg?style=for-the-badge
+[license-url]: https://github.com/justsomescripts/ansible-homelab/blob/main/LICENSE
