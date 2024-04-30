@@ -13,8 +13,8 @@ Install and configure [ZFS Event Daemon](https://packages.debian.org/bookworm/zf
 | name                                                 | type   | required | choices                | default                    | description                                                            |
 | ---------------------------------------------------- | ------ | -------- | ---------------------- | -------------------------- | ---------------------------------------------------------------------- |
 | `zed_configuration__mail.recipient`                  | string | ❌       | linux user             | `root`                     | username to use for mail alias                                         |
-| `zed_configuration__mail.program`                    | string | ❌       | sendmail program       | `-s '@SUBJECT@' @ADDRESS@` | path / name of mail program to use                                     |
-| `zed_configuration__mail.options`                    | string | ❌       | sendmail program flags | `mail`                     | additional flags for sendint mail                                      |
+| `zed_configuration__mail.program`                    | string | ❌       | sendmail program flags | `mail`                     | additional flags for sendint mail                                      |
+| `zed_configuration__mail.options`                    | string | ❌       | sendmail program       | `-s '@SUBJECT@' @ADDRESS@` | path / name of mail program to use                                     |
 | `zed_configuration__notify.verbose`                  | bool   | ❌       |                        | `false`                    | send verbose notifications                                             |
 | `zed_configuration__notify.zfs_data_event`           | bool   | ❌       |                        | `false`                    | send notifications for `ereport.fs.zfs.data`                           |
 | `zed_configuration__notify.interval`                 | int    | ❌       | seconds                | `false`                    | notification interval                                                  |
