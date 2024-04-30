@@ -1,4 +1,7 @@
 ---
+# Ansible
+ansible_become_pass: "{{ lookup('community.general.bitwarden', 'Proxmox VE admin', field='password')[0] }}"
+
 # Subscription key
 proxmox__system:
   subscription_key: "{{ lookup('community.general.bitwarden', 'Proxmox VE Subscription', field='Subscription Key 1 CPU')[0] }}"
