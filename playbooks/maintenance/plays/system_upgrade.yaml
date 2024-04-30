@@ -1,5 +1,5 @@
 ---
-- name: Proxmox Virtual Environment
+- name: Upgrade systems
   hosts: linux
   tasks:
 
