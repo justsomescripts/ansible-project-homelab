@@ -1,0 +1,7 @@
+# Managed by Ansible
+
+maxretry = {{ ups__ups.maxretry }}
+
+[{{ ups__ups.name }}]
+    driver = {{ ups__ups.driver }}
+    port = {{ ups__ups.port }}

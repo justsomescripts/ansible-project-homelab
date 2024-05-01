@@ -10,12 +10,12 @@ apt_upgrade__update:
   force_apt_get: true
 
 # System configuration
-zed_configuration__notify:
+zed__notify:
   verbose: true
   zfs_data_event: true
   interval: 3600
 
-unattended_upgrades_configuration__packages:
+unattended_upgrades__packages:
   origins:
     - origin: Debian
       codename: ${distro_codename}

@@ -13,18 +13,18 @@ linux__packages:
   - tmux
   - htop
 
-chrony_configuration__time:
+chrony__time:
   ntp_server: 192.168.178.3
 
-remote_user_configuration__prompt:
+remote_user__prompt:
   enabled: true
   color_code: 33
 
-remote_user_configuration__tmux:
+remote_user__tmux:
   enabled: true
   color: yellow
 
-unattended_upgrades_configuration__report:
+unattended_upgrades__report:
   mail:
     user: root # send to default alias for root
     sender: infra@dgries.de
@@ -32,11 +32,11 @@ unattended_upgrades_configuration__report:
   verbose: false
   debug: false
 
-postfix_configuration__relay:
+postfix__relay:
   fqdn: smtp.mailbox.org
   port: 465
 
-postfix_configuration__sender:
+postfix__sender:
   username: mail@dgries.de
   mail: infra@dgries.de
   name: "{{ ansible_hostname }}"
@@ -45,7 +45,7 @@ postfix_configuration__sender:
   alias_file: /etc/aliases
   header_checks_file: /etc/postfix/smtp_header_checks
 
-postfix_configuration__smtp:
+postfix__smtp:
   credentials:
     username: "{{ lookup('community.general.bitwarden', 'Infrastructure Mail', field='username')[0] }}"
     password: "{{ lookup('community.general.bitwarden', 'Infrastructure Mail', field='password')[0] }}"

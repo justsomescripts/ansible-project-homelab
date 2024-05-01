@@ -1,0 +1,17 @@
+# Managed by Ansible
+
+ZED_EMAIL_ADDR="{{ zed__mail.recipient }}"
+ZED_EMAIL_PROG="{{ zed__mail.program }}"
+ZED_EMAIL_OPTS="{{ zed__mail.options }}"
+
+ZED_NOTIFY_INTERVAL_SECS={{ zed__notify.interval }}
+ZED_NOTIFY_VERBOSE={{ '1' if zed__notify.verbose else '0' }}
+ZED_NOTIFY_DATA={{ '1' if zed__notify.zfs_data_event else '' }}
+
+ZED_USE_ENCLOSURE_LEDS={{ '1' if zed__enclosure.use_leds else '' }}
+
+ZED_SCRUB_AFTER_RESILVER={{ '1' if zed__scrub.after_resilver else '' }}
+
+{{ '' if zed__syslog.subclass_include.enabled else '#' }}ZED_SYSLOG_SUBCLASS_INCLUDE="{{ zed__syslog.subclass_include.content }}"
+{{ '' if zed__syslog.subclass_exclude.enabled else '#' }}ZED_SYSLOG_SUBCLASS_EXCLUDE="{{ zed__syslog.subclass_exclude.content }}"
+ZED_SYSLOG_DISPLAY_GUIDS={{ '1' if zed__syslog.use_guids else '0' }}

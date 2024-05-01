@@ -1,0 +1,74 @@
+---
+- name: Gather service facts
+  ansible.builtin.service_facts:
+
+- name: Setup Jailmaker
+  block:
+    - name: Check if dataset exists
+      ansible.builtin.stat:
+        path: /mnt/{{ jailmaker__jail.dataset }}/jailmaker/
+      register: jailmaker_dataset
+
+    - name: Print status
+      ansible.builtin.debug:
+        msg: >
+          Jailmaker dataset does not exist! Please check
+          https://www.truenas.com/docs/scale/scaletutorials/apps/sandboxes/#configure-a-dataset-for-jailmaker
+          for setup instructions.
+      when: not (jailmaker_dataset.stat.exists and jailmaker_dataset.stat.isdir)
+    - name: Exit if dataset does not exist
+      ansible.builtin.meta: end_play
+      when: not (jailmaker_dataset.stat.exists and jailmaker_dataset.stat.isdir)
+
+    - name: Install Jailmaker
+      ansible.builtin.get_url:
+        url: https://raw.githubusercontent.com/Jip-Hop/jailmaker/main/jlmkr.py
+        dest: /mnt/{{ jailmaker__jail.dataset }}/jailmaker/jlmkr.py
+        mode: '0700'
+        owner: root
+        group: root
+      register: jailmaker_bin
+      become: true
+
+    - name: Start Jailmaker
+      ansible.builtin.command: "{{ jailmaker_bin.dest }} startup"
+      changed_when: true
+      become: true
+
+- name: Setup Jail
+  block:
+    - name: Check if Jail exists
+      ansible.builtin.stat:
+        path: /mnt/{{ jailmaker__jail.dataset }}/jailmaker/jails/{{ jailmaker__jail.name }}
+      register: jail_dataset
+      become: true
+
+    - name: Copy new configuration
+      ansible.builtin.template:
+        src: templates/config.j2
+        dest: /mnt/{{ jailmaker__jail.dataset }}/jailmaker/{{ jailmaker__jail.name }}_config.tmp
+        mode: '0755'
+        owner: root
+        group: root
+      when: not (jail_dataset.stat.exists and jail_dataset.stat.isdir)
+      register: jailmaker_tmp_config
+      notify: remove_tmp_config
+      become: true
+
+    - name: Copy configuration
+      ansible.builtin.template:
+        src: templates/config.j2
+        dest: /mnt/{{ jailmaker__jail.dataset }}/jailmaker/jails/{{ jailmaker__jail.name }}/config
+        mode: '0755'
+        owner: root
+        group: root
+      when: jail_dataset.stat.exists and jail_dataset.stat.isdir
+      become: true
+      notify: restart_jail
+
+    - name: Create Jail if it doesn't exist
+      ansible.builtin.command: "{{ jailmaker_bin.dest }} create --config {{ jailmaker_tmp_config.dest }} {{ jailmaker__jail.name }}"
+      when: not (jail_dataset.stat.exists and jail_dataset.stat.isdir)
+      changed_when: true
+      become: true
+      notify: restart_jail

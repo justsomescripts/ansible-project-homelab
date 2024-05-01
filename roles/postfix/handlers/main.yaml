@@ -1,0 +1,21 @@
+---
+- name: Postmap sender
+  ansible.builtin.command:
+    cmd: postmap "{{ postfix__sender.canonical_file }}"
+  become: true
+  listen: postmap_sender
+  changed_when: true
+
+- name: Postmap credentials
+  ansible.builtin.command:
+    cmd: postmap "{{ postfix__smtp.credentials.file }}"
+  become: true
+  listen: postmap_credentials
+  changed_when: true
+
+- name: Restart Postfix after initialization
+  ansible.builtin.service:
+    name: postfix
+    state: restarted
+  become: true
+  listen: restart_postfix

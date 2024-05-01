@@ -1,0 +1,30 @@
+# Managed by Ansible
+
+myhostname                 = {{ ansible_hostname }}
+mydestination              = $myhostname, localhost.$mydomain, ocalhost
+mynetworks                 = 127.0.0.1/8
+inet_interfaces            = loopback-only
+recipient_delimiter        = +
+compatibility_level        = 2
+smtpd_banner               = $myhostname ESMTP $mail_name (Debian/GNU)
+biff                       = no
+append_dot_mydomain        = no
+
+relayhost                  = [{{ postfix__relay.fqdn }}]:{{ postfix__relay.port }}
+
+sender_canonical_maps      = hash:{{ postfix__sender.canonical_file }}
+
+smtp_use_tls               = {{ 'yes' if postfix__smtp.tls.enabled else 'no' }}
+smtp_enforce_tls           = {{ 'yes' if postfix__smtp.tls.enforced else 'no' }}
+smtp_tls_security_level    = {{ postfix__smtp.tls.security_level }}
+smtp_tls_wrappermode       = {{ 'yes' if postfix__smtp.tls.wrappermode_enabled else 'no' }}
+smtp_tls_CAfile            = {{ postfix__smtp.tls.ca_file }}
+
+smtp_sasl_auth_enable      = yes
+smtp_sasl_password_maps    = hash:{{ postfix__smtp.credentials.file }}
+smtp_sasl_security_options = {{ postfix__smtp.credentials.options }}
+
+smtp_header_checks         = pcre:{{ postfix__sender.header_checks_file }}
+
+alias_maps                 = hash:{{ postfix__sender.alias_file }}
+alias_database             = hash:{{ postfix__sender.alias_file }}

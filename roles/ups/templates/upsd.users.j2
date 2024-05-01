@@ -1,0 +1,7 @@
+# Managed by Ansible
+
+[{{ ups__user.username }}]
+    password = {{ ups__user.password }}
+    upsmon {{ ups__upsd.upsmon }}
+    actions = {{ ups__upsd.actions }}
+    instcmds = {{ ups__upsd.instcmds }}

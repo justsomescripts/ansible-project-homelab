@@ -1,0 +1,22 @@
+---
+- name: Ensure 'unattended-upgrades' is installed
+  ansible.builtin.package:
+    name: unattended-upgrades
+  become: true
+
+- name: Ensure presence of 'needrestart' if configured
+  ansible.builtin.package:
+    name: needrestart
+    state: "{{ 'present' if unattended_upgrades__system.restart_daemons else 'absent' }}"
+  become: true
+
+- name: Template configuration files
+  ansible.builtin.template:
+    src: "{{ item }}"
+    dest: /etc/apt/apt.conf.d/{{ item | basename | regex_replace('\.j2$', '') }}
+    mode: "0644"
+    owner: root
+    group: root
+  with_fileglob: "../templates/*.j2"
+  notify: restart_unattended_upgrades
+  become: true

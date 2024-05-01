@@ -1,7 +1,7 @@
 ---
 - name: Proxmox Virtual Environment
   hosts: proxmox
-  remote_user: "{{ remote_user_configuration__admin.user }}"
+  remote_user: "{{ remote_user__admin.user }}"
   tasks:
 
     - name: Configure Linux system
@@ -35,37 +35,37 @@
 
         - name: Configure SSH admin user
           ansible.builtin.import_role:
-            name: remote_user_configuration
+            name: remote_user
           tags:
-            - remote_user_configuration
+            - remote_user
 
         - name: Configure Chrony
           ansible.builtin.import_role:
-            name: chrony_configuration
+            name: chrony
           tags:
-            - chrony_configuration
+            - chrony
 
         - name: Configure Postfix
           ansible.builtin.import_role:
-            name: postfix_configuration
+            name: postfix
           tags:
-            - postfix_configuration
+            - postfix
 
         - name: Configure UPS
           ansible.builtin.import_role:
-            name: ups_configuration
+            name: ups
           tags:
-            - ups_configuration
+            - ups
 
         - name: Configure ZFS event daemon
           ansible.builtin.import_role:
-            name: zed_configuration
+            name: zed
           tags:
-            - zed_configuration
+            - zed
 
         # - name: Configure automatc updates
         #   ansible.builtin.import_role:
-        #     name: unattended_upgrades_configuration
+        #     name: unattended_upgrades
         #   tags:
         #     - update_configuration
 
@@ -76,9 +76,9 @@
 
         - name: Configure PVE admin user
           ansible.builtin.import_role:
-            name: pve_user_configuration
+            name: pve_user
           tags:
-            - pve_user_configuration
+            - pve_user
 
   handlers:
 

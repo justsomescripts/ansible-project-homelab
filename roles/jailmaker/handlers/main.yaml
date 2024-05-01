@@ -1,0 +1,13 @@
+---
+- name: Restart Jail
+  ansible.builtin.command: "{{ jailmaker_bin.dest }} restart {{ jailmaker__jail.name }}"
+  listen: restart_jail
+  changed_when: true
+  become: true
+
+- name: Remove temporary config file
+  ansible.builtin.file:
+    path: "{{ jailmaker_tmp_config.dest }}"
+    state: absent
+  listen: remove_tmp_config
+  become: true

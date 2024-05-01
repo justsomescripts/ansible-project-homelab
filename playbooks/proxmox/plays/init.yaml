@@ -22,7 +22,7 @@
 
     - name: Configure SSH admin user
       ansible.builtin.import_role:
-        name: remote_user_configuration
+        name: remote_user
 
     - name: Create initialized file
       ansible.builtin.copy:

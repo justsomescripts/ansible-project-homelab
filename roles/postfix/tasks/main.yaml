@@ -1,0 +1,59 @@
+---
+- name: Install Postfix and dependencies
+  ansible.builtin.package:
+    name:
+      - postfix
+      - postfix-pcre
+      - libsasl2-modules
+      - sasl2-bin
+      - bsd-mailx
+  become: true
+
+- name: Configure Postfix settings
+  ansible.builtin.template:
+    src: main.cf.j2
+    dest: /etc/postfix/main.cf
+    mode: "0644"
+    owner: root
+    group: root
+  become: true
+  notify: restart_postfix
+
+- name: Configure Postfix sender
+  ansible.builtin.template:
+    src: sender_canonical.j2
+    dest: "{{ postfix__sender.canonical_file }}"
+    mode: "0644"
+    owner: root
+    group: root
+  become: true
+  notify: postmap_sender
+
+- name: Configure Postfix sender name
+  # this replaces the mail header to include a nicer FROM name
+  # instead of just the sender address
+  ansible.builtin.template:
+    src: smtp_header_checks.j2
+    dest: "{{ postfix__sender.header_checks_file }}"
+    mode: "0644"
+    owner: root
+    group: root
+  become: true
+  notify: restart_postfix
+
+- name: Configure Postfix Credentials
+  ansible.builtin.template:
+    src: smtp_password.j2
+    dest: "{{ postfix__smtp.credentials.file }}"
+    mode: "0600"
+    owner: root
+    group: root
+  become: true
+  notify: postmap_credentials
+
+- name: Ensure Postfix is running after initialization
+  ansible.builtin.service:
+    name: postfix
+    state: started
+    enabled: true
+  become: true

@@ -1,0 +1,26 @@
+---
+remote_user__ssh:
+  sshport: 22
+  pubkey_auth_enabled: true
+  password_auth_enabled: false
+  x_forward_enabled: false
+  agent_auth:
+    enabled: true
+    authorized_keys_dir: /etc/ssh/sudo_authorized_keys
+
+remote_user__admin:
+  user: root
+  password: changeme
+  update_password: on_create
+  create: false
+  groups:
+    - sudo
+    - users
+
+remote_user__prompt:
+  enabled: false
+  color_code: 32
+
+remote_user__tmux:
+  enabled: false
+  color: green

@@ -1,0 +1,13 @@
+# Managed by Ansible
+
+MINSUPPLIES {{ ups__upsmon.minsupplies }}
+SHUTDOWNCMD "{{ ups__upsmon.shutdowncmd }}"
+POLLFREQ {{ ups__upsmon.pollfreq }}
+POLLFREQALERT {{ ups__upsmon.pollfreqalert }}
+HOSTSYNC {{ ups__upsmon.hostsync }}
+DEADTIME {{ ups__upsmon.deadtime }}
+POWERDOWNFLAG {{ ups__upsmon.powerdownflag }}
+RBWARNTIME {{ ups__upsmon.rbwarntime }}
+NOCOMMWARNTIME {{ ups__upsmon.nocommwarntime }}
+FINALDELAY {{ ups__upsmon.finaldelay }}
+MONITOR {{ ups__upsmon.monitor.system }} {{ ups__upsmon.monitor.powervalue }} {{ ups__user.username }} {{ ups__user.password }} {{ ups__upsmon.monitor.type }}

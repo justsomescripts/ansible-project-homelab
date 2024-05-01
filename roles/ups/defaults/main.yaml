@@ -1,0 +1,34 @@
+---
+ups__user:
+  username: upsmon
+  password: changeme
+
+ups__nut:
+  mode: standalone
+
+ups__ups:
+  maxretry: 3
+  name: upsname
+  driver: upsdriver
+  port: auto
+
+ups__upsd:
+  upsmon: primary
+  actions: SET
+  instcmds: ALL
+
+ups__upsmon:
+  minsupplies: 1
+  shutdowncmd: /sbin/shutdown -h +0
+  pollfreq: 5
+  pollfreqalert: 5
+  hostsync: 15
+  deadtime: 15
+  powerdownflag: /etc/killpower
+  rbwarntime: 43200
+  nocommwarntime: 300
+  finaldelay: 5
+  monitor:
+    system: "{{ ups__ups.name }}@localhost" # Eaton3S@localhost
+    powervalue: 1
+    type: primary

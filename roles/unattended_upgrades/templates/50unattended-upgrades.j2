@@ -1,0 +1,36 @@
+// Managed by Ansible
+
+Unattended-Upgrade::Origins-Pattern {
+{% for origin in unattended_upgrades__packages.origins %}
+    "origin={{ origin.origin }},codename={{ origin.codename}}{{ ',label=' + origin.label if origin.label }}";
+{% endfor %}
+};
+
+Unattended-Upgrade::Package-Blacklist {
+{% for package in unattended_upgrades__packages.blacklist %}
+    "{{ package }}";
+{% endfor %}
+};
+
+Unattended-Upgrade::AutoFixInterruptedDpkg "{{ unattended_upgrades__dpkg.autofix_interrupted | lower }}";
+Unattended-Upgrade::MinimalSteps "{{ unattended_upgrades__dpkg.minimal_steps | lower }}";
+Unattended-Upgrade::InstallOnShutdown "{{ unattended_upgrades__dpkg.install_on_shutdown | lower }}";
+Unattended-Upgrade::Update-Days {{ '{"' + unattended_upgrades__autoupgrade.days | join('";"') + '"}' }};
+
+Unattended-Upgrade::Remove-Unused-Kernel-Packages "{{ unattended_upgrades__dpkg.autoremove.kernel | lower }}";
+Unattended-Upgrade::Remove-New-Unused-Dependencies "{{ unattended_upgrades__dpkg.autoremove.new_unused | lower }}";
+Unattended-Upgrade::Remove-Unused-Dependencies "{{ unattended_upgrades__dpkg.autoremove.unused | lower }}";
+Unattended-Upgrade::Allow-downgrade "{{ unattended_upgrades__dpkg.allow_downgrade | lower }}";
+
+Unattended-Upgrade::Mail "{{ unattended_upgrades__report.mail.user }}";
+Unattended-Upgrade::Sender "{{ unattended_upgrades__report.mail.sender }}";
+Unattended-Upgrade::MailReport "{{ unattended_upgrades__report.level }}";
+Unattended-Upgrade::Verbose "{{ unattended_upgrades__report.verbose | lower }}";
+Unattended-Upgrade::Debug "{{ unattended_upgrades__report.debug | lower }}";
+
+Unattended-Upgrade::Automatic-Reboot "{{ unattended_upgrades__system.auto_reboot.enabled | lower }}";
+Unattended-Upgrade::Automatic-Reboot-WithUsers "{{ unattended_upgrades__system.auto_reboot.enabled_withusers | lower }}";
+Unattended-Upgrade::Automatic-Reboot-Time "{{ unattended_upgrades__system.auto_reboot.time }}";
+
+Unattended-Upgrade::SyslogEnable "{{ unattended_upgrades__system.syslog.enabled | lower }}";
+Unattended-Upgrade::SyslogFacility "{{ unattended_upgrades__system.syslog.facility }}";

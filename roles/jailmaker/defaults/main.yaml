@@ -1,0 +1,42 @@
+---
+jailmaker__jail:
+  name: debian
+  dataset: tank
+
+jailmaker__os:
+  autostart_enabled: true
+  gpu_passthrough:
+    intel_enabled: false
+    nvidia_enabled: false
+  seccomp_enabled: true
+  distribution:
+    name: debian
+    release: bookworm
+
+jailmaker__mounts: []
+  # - source: /mnt/speed/jailmaker-data/container/dockge/data
+  #   destination: /opt/container/data/dockge
+  # - source: /mnt/speed/jailmaker-data/container/dockge/stacks
+  #   destination: /opt/container/stacks
+
+jailmaker__systemd:
+  nspawn:
+    user_args:
+      - resolv-conf=bind-host
+      - system-call-filter='add_key keyctl bpf'
+    default_args:
+      - keep-unit
+      - quiet
+      - boot
+      - bind-ro=/sys/module
+      - inaccessible=/sys/module/apparmor
+  run:
+    default_args:
+      - property=KillMode=mixed
+      - property=Type=notify
+      - property=RestartForceExitStatus=133
+      - property=SuccessExitStatus=133
+      - property=Delegate=yes
+      - property=TasksMax=infinity
+      - collect
+      - setenv=SYSTEMD_NSPAWN_LOCK=0

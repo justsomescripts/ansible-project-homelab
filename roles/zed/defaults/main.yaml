@@ -1,0 +1,25 @@
+---
+zed__mail:
+  recipient: root
+  program: mail
+  options: -s '@SUBJECT@' @ADDRESS@
+
+zed__notify:
+  verbose: false
+  zfs_data_event: true
+  interval: 3600
+
+zed__enclosure:
+  use_leds: true
+
+zed__scrub:
+  after_resilver: false
+
+zed__syslog:
+  use_guids: false
+  subclass_include:
+    enabled: false
+    content: checksum|scrub_*|vdev.*
+  subclass_exclude:
+    enabled: true
+    content: history_event

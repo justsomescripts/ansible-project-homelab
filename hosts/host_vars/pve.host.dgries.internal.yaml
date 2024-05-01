@@ -8,7 +8,7 @@ linux__init:
   ansible_port: "22"
 
 # System configuration
-remote_user_configuration__admin:
+remote_user__admin:
   user: "{{ lookup('community.general.bitwarden', 'Proxmox VE admin', field='username')[0] }}"
   create: true
   update_password: always
@@ -17,7 +17,7 @@ remote_user_configuration__admin:
     - sudo
     - users
 
-remote_user_configuration__ssh:
+remote_user__ssh:
   sshport: "1337"
   sshkey: "{{ lookup('community.general.bitwarden', 'Proxmox VE admin', field='SSH Public Key')[0] }}\n"
   pubkey_auth_enabled: true
@@ -30,7 +30,7 @@ remote_user_configuration__ssh:
 kernel_cmdline: "root=ZFS=rpool/ROOT/pve-1 boot=zfs intel_iommu=on"
 
 # PVE users and groups
-pve_user_configuration__user:
+pve_user__user:
   create: true
   name: "{{ lookup('community.general.bitwarden', 'Proxmox VE admin', field='username')[0] }}"
   password: "{{ lookup('community.general.bitwarden', 'Proxmox VE admin', field='password')[0] }}"
@@ -44,11 +44,11 @@ pve_user_configuration__user:
   mail: infra@dgries.de
 
 # UPS configuration
-ups_configuration__user:
+ups__user:
   username: upsmon
   password: "{{ lookup('community.general.bitwarden', 'Proxmox VE system', field='UPS Password')[0] }}"
 
-ups_configuration__ups:
+ups__ups:
   maxretry: 3
   name: Eaton3S
   driver: usbhid-ups
