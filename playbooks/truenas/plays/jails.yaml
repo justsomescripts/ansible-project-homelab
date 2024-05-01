@@ -1,0 +1,20 @@
+---
+- name: TrueNAS SCALE Jails
+  hosts: truenas
+  remote_user: "{{ remote_user_configuration__admin.user }}"
+  tasks:
+
+    - name: Setup container environment
+      tags:
+        - tn_ctr
+      block:
+
+        - name: Setup Jails
+          ansible.builtin.include_role:
+            name: jailmaker_configuration
+          tags:
+            - tn_jailmaker_configuration
+          vars:
+            jailmaker_configuration__jail:
+              name: testjail
+              dataset: speed
