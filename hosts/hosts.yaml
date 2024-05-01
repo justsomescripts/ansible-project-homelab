@@ -15,6 +15,7 @@ hardware:
   children:
     proxmox:
     pihole:
+    truenas:
 
 proxmox:
   hosts:
