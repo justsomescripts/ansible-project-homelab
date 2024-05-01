@@ -72,13 +72,14 @@ sudo pacman --sync ansible sshpass python-passlib jq python-jmespath
 **Role documentation**:
 
 - [apt_upgrade](roles/apt_upgrade/README.md)
-- [chrony_configuration](roles/chrony_configuration/README.md)
-- [postfix_configuration](roles/postfix_configuration/README.md)
-- [pve_user_configuration](roles/pve_user_configuration/README.md)
-- [remote_user_configuration](roles/remote_user_configuration/README.md)
-- [unattended_upgrades_configuration](roles/unattended_upgrades_configuration/README.md)
-- [ups_configuration](roles/ups_configuration/README.md)
-- [zed_configuration](roles/zed_configuration/README.md)
+- [chrony](roles/chrony/README.md)
+- [jailmaker](roles/jailmaker/README.md)
+- [postfix](roles/postfix/README.md)
+- [pve_user](roles/pve_user/README.md)
+- [remote_user](roles/remote_user/README.md)
+- [unattended_upgrades](roles/unattended_upgrades/README.md)
+- [ups](roles/ups/README.md)
+- [zed](roles/zed/README.md)
 
 ## 📖 Usage
 
