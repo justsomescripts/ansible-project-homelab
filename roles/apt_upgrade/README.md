@@ -23,7 +23,7 @@ Upgrade Debian based systems using APT or Aptitude.
 
 ```yaml
 ---
-# host_vars
+# group_vars
 apt_upgrade__cleanup:
   autoclean: true
   autoremove: true

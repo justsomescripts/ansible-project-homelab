@@ -34,7 +34,7 @@ Create [PVE users](https://pve.proxmox.com/pve-docs/chapter-pveum.html) and assi
 
 ```yaml
 ---
-# group_vars
+# host_vars
 pve_user_configuration__user:
   create: true
   name: admin

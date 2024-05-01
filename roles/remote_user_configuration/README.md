@@ -36,7 +36,7 @@ Create Linux users, assign privileges and configure remote access over SSH.
 
 ```yaml
 ---
-# group_vars
+# host_vars
 remote_user_configuration__admin:
   user: "{{ lookup('community.general.bitwarden', 'Proxmox VE admin', field='username')[0] }}"
   create: true
