@@ -38,20 +38,8 @@ The dataset name has to match the `jailmaker__jail.dataset` variable.
 ## 💻 Example Usage
 
 ```yaml
----
-# host_vars
-truenas_jails:
-  - jailmaker__jail:
-      name: testjail
-      dataset: speed
-    jailmaker__mounts:
-      - source: /mnt/speed/jailmaker-data/container/dockge/data
-        destination: /opt/container/data/dockge
-      - source: /mnt/speed/jailmaker-data/container/dockge/stacks
-        destination: /opt/container/stacks
-
----
 # Playbook
+---
 - name: TrueNAS SCALE Jails
   hosts: truenas
   remote_user: "{{ remote_user__admin.user }}"
@@ -62,14 +50,15 @@ truenas_jails:
         - tn_ctr
       block:
 
-        - name: Setup Debian Jail
-          ansible.builtin.import_role:
+        - name: Setup Jails
+          ansible.builtin.include_role:
             name: jailmaker
           tags:
             - tn_jailmaker
-          vars: "{{ item }}"
-          loop: "{{ truenas_jails }}"
-
+          vars:
+            jailmaker__jail:
+              name: testjail
+              dataset: speed
 ...
 ```
 
