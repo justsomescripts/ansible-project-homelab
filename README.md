@@ -19,6 +19,7 @@ declarations for virtual machines.
 - [✈️ Getting Started](#️-getting-started)
 - [📖 Usage](#-usage)
 - [🛣 Roadmap](#-roadmap)
+  - [Not planned due to introduction of systemd-nspawn on TrueNAS Scale](#not-planned-due-to-introduction-of-systemd-nspawn-on-truenas-scale)
 - [🤝 Contributing](#-contributing)
 - [📜 License](#-license)
 - [📬 Contact](#-contact)
@@ -97,7 +98,7 @@ ansible-playbook site.yaml --tags upgrade              # upgrade all systems
 <!-- ROADMAP -->
 ## 🛣 Roadmap
 
-- [ ] Systemd-nspawn containers on TrueNAS Scale (Jailmaker)
+- [x] Systemd-nspawn containers on TrueNAS Scale (Jailmaker)
 - [ ] Centralized monitoring/logging
 - [ ] Migrate Nextcloud to systemd-nspawn (currently Scale app)
 - [ ] Migrate gitea to systemd-nspawn (currently Scale app)
