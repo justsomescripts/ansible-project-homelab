@@ -12,7 +12,13 @@ Setup [Jailmaker](https://github.com/Jip-Hop/jailmaker/) jails on a TrueNAS scal
 * [ansible.builtin.service](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/service_module.html)
 * [ansible.builtin.command](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/command_module.html)
 
-## Prerequisites
+## 📜 Prerequisites
+
+Configure a dataset for Jailmaker as described in the ["Configure a Dataset for Jailmaker" section in the official documentation](https://www.truenas.com/docs/scale/24.04/scaletutorials/apps/sandboxes/#configure-a-dataset-for-jailmaker). This is not done by the role to avoid data loss caused by wrong configuration.
+
+The dataset name has to match the `jailmaker__jail.dataset` variable.
+
+## 🧩 Variables
 
 | name                                                        | type           | required | choices                     | default                                                                                                                                                                                                                                                    | description                                                            |
 | ----------------------------------------------------------- | -------------- | -------- | --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
