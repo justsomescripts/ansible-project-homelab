@@ -1,6 +1,52 @@
 ---
+# Ansible
+ansible_become_pass: "{{ lookup('community.general.bitwarden', 'Proxmox VE admin', field='password')[0] }}"
+
+# Initial setup configuration
+linux__init:
+  ansible_ssh_pass: "{{ lookup('community.general.bitwarden', 'Proxmox VE system', field='password')[0] }}"
+  ansible_port: "22"
+
 # System configuration
+remote_user_configuration__admin:
+  user: "{{ lookup('community.general.bitwarden', 'Proxmox VE admin', field='username')[0] }}"
+  create: true
+  update_password: always
+  password: "{{ lookup('community.general.bitwarden', 'Proxmox VE admin', field='password')[0] }}"
+  groups:
+    - sudo
+    - users
+
+remote_user_configuration__ssh:
+  sshport: "1337"
+  sshkey: "{{ lookup('community.general.bitwarden', 'Proxmox VE admin', field='SSH Public Key')[0] }}\n"
+  pubkey_auth_enabled: true
+  password_auth_enabled: false
+  x_forward_enabled: false
+  agent_auth:
+    enabled: true
+    authorized_keys_dir: /etc/ssh/sudo_authorized_keys
+
 kernel_cmdline: "root=ZFS=rpool/ROOT/pve-1 boot=zfs intel_iommu=on"
+
+# PVE users and groups
+pve_user_configuration__user:
+  create: true
+  name: "{{ lookup('community.general.bitwarden', 'Proxmox VE admin', field='username')[0] }}"
+  password: "{{ lookup('community.general.bitwarden', 'Proxmox VE admin', field='password')[0] }}"
+  realm: pam
+  groups:
+    - vmadmin
+  expire: 0
+  firstname: David
+  lastname: Gries
+  comment: VM administration
+  mail: infra@dgries.de
+
+# UPS configuration
+ups_configuration__user:
+  username: upsmon
+  password: "{{ lookup('community.general.bitwarden', 'Proxmox VE system', field='UPS Password')[0] }}"
 
 ups_configuration__ups:
   maxretry: 3
