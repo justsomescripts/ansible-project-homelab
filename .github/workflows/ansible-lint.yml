@@ -1,0 +1,15 @@
+name: ansible-lint
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: ansible lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.1.4
+      - name: run ansible-lint
+        uses: ansible/ansible-lint@v24.2.3
