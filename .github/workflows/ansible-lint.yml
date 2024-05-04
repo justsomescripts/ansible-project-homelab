@@ -1,7 +1,7 @@
 name: ansible-lint
 
 on:
-  push:
+  pull_request:
     branches:
       - main
 
