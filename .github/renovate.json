@@ -1,0 +1,3 @@
+{
+  "extends": ["github>justsomescripts/renovate-config#release"]
+}
