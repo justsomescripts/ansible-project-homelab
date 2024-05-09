@@ -1,3 +1,4 @@
 {
+  "semanticCommits": "disabled",
   "extends": ["github>justsomescripts/common-actions//.github/renovate-common#main"]
 }
