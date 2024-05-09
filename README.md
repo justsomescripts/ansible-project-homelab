@@ -1,9 +1,4 @@
 <a name="readme-top"></a>
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
 <!-- omit in toc -->
 # Ansible Homelab
 
@@ -143,18 +138,4 @@ Distributed under the *GNU GENERAL PUBLIC LICENSE*. See [`LICENSE`](LICENSE) for
 
 David Gries - [@dgries](https://www.linkedin.com/in/dgries/) - mail@dgries.de
 
-
-<br><sup>README based on [othneildrew/Best-README-Template](https://github.com/othneildrew/Best-README-Template/tree/master)</sup>
-
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-[contributors-shield]: https://img.shields.io/github/contributors/justsomescripts/ansible-homelab.svg?style=for-the-badge
-[contributors-url]: https://github.com/justsomescripts/ansible-homelab/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/justsomescripts/ansible-homelab.svg?style=for-the-badge
-[forks-url]: https://github.com/justsomescripts/ansible-homelab/network/members
-[stars-shield]: https://img.shields.io/github/stars/justsomescripts/ansible-homelab.svg?style=for-the-badge
-[stars-url]: https://github.com/justsomescripts/ansible-homelab/stargazers
-[issues-shield]: https://img.shields.io/github/issues/justsomescripts/ansible-homelab.svg?style=for-the-badge
-[issues-url]: https://github.com/justsomescripts/ansible-homelab/issues
-[license-shield]: https://img.shields.io/github/license/justsomescripts/ansible-homelab.svg?style=for-the-badge
-[license-url]: https://github.com/justsomescripts/ansible-homelab/blob/main/LICENSE
