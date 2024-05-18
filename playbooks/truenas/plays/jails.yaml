@@ -18,3 +18,9 @@
             jailmaker__jail:
               name: testjail
               dataset: speed
+            jailmaker__systemd:
+              nspawn:
+                user_args:
+                  - network-bridge=br1
+                  - resolv-conf=bind-host
+                  - system-call-filter='add_key keyctl bpf'
