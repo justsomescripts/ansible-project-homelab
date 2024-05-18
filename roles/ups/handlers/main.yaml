@@ -4,7 +4,8 @@
     name: "{{ item }}"
     state: restarted
   become: true
-  listen: restart_nut
+  listen:
+    - Restart NUT
   loop:
     - nut-server
     - nut-client

@@ -3,5 +3,6 @@
   ansible.builtin.service:
     name: zed
     state: restarted
-  listen: restart_zed
+  listen:
+    - Restart ZED
   become: true

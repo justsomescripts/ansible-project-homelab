@@ -14,7 +14,8 @@
   become: true
   # reload is required, a service restart is not sufficient (and not required)
   # https://chrony-project.org/doc/4.0/chronyc.html#reload
-  notify: reload_sources
+  notify:
+    - Reload sources
 
 - name: Ensure Chrony is running after initialization
   ansible.builtin.service:

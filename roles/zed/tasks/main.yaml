@@ -12,7 +12,8 @@
     group: root
     mode: "0600"
   become: true
-  notify: restart_zed
+  notify:
+    - Restart ZED
 
 - name: Ensure ZED service is enabled
   ansible.builtin.service:
