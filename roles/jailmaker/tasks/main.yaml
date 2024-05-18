@@ -52,7 +52,8 @@
         group: root
       when: not (jail_dataset.stat.exists and jail_dataset.stat.isdir)
       register: jailmaker_tmp_config
-      notify: remove_tmp_config
+      notify:
+        - Remove temporary config
       become: true
 
     - name: Copy configuration
@@ -64,11 +65,13 @@
         group: root
       when: jail_dataset.stat.exists and jail_dataset.stat.isdir
       become: true
-      notify: restart_jail
+      notify:
+        - Restart Jail
 
     - name: Create Jail if it doesn't exist
       ansible.builtin.command: "{{ jailmaker_bin.dest }} create --config {{ jailmaker_tmp_config.dest }} {{ jailmaker__jail.name }}"
       when: not (jail_dataset.stat.exists and jail_dataset.stat.isdir)
       changed_when: true
       become: true
-      notify: restart_jail
+      notify:
+        - Restart Jail

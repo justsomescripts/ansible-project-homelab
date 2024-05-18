@@ -39,7 +39,8 @@
     owner: root
     group: root
   become: true
-  notify: restart_sshd
+  notify:
+    - Restart SSHD
 
 - name: Add SSH keys to home
   ansible.builtin.copy:

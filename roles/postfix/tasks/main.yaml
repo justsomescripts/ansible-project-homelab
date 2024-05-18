@@ -17,7 +17,8 @@
     owner: root
     group: root
   become: true
-  notify: restart_postfix
+  notify:
+    - Restart Postfix
 
 - name: Configure Postfix sender
   ansible.builtin.template:
@@ -27,7 +28,8 @@
     owner: root
     group: root
   become: true
-  notify: postmap_sender
+  notify:
+    - Postmap sender
 
 - name: Configure Postfix sender name
   # this replaces the mail header to include a nicer FROM name
@@ -39,7 +41,8 @@
     owner: root
     group: root
   become: true
-  notify: restart_postfix
+  notify:
+    - Restart Postfix
 
 - name: Configure Postfix Credentials
   ansible.builtin.template:
@@ -49,7 +52,8 @@
     owner: root
     group: root
   become: true
-  notify: postmap_credentials
+  notify:
+    - Postmap credentials
 
 - name: Ensure Postfix is running after initialization
   ansible.builtin.service:

@@ -13,7 +13,8 @@
     mode: "0640"
   with_fileglob:
     - ../files/*
-  notify: restart_nut
+  notify:
+    - Restart NUT
   become: true
 
 - name: Copy templated configuration files
@@ -25,7 +26,8 @@
     mode: "0640"
   with_fileglob:
     - ../templates/*
-  notify: restart_nut
+  notify:
+    - Restart NUT
   become: true
 
 - name: Ensure NUT services are running after configuration

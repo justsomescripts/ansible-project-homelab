@@ -4,4 +4,5 @@
     name: unattended-upgrades
     state: restarted
   become: true
-  listen: restart_unattended_upgrades
+  listen:
+    - Restart Unattended Upgrades
