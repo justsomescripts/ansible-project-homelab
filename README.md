@@ -114,26 +114,6 @@ See the [open issues](https://github.com/justsomescripts/ansible-homelab/issues)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-## 🤝 Contributing
-
-Although this is project is specifically targeted to my personal setup and probably
-not re-used, contributions are *greatly appreciated*. So if you have any suggestions
-for improvements or fixes, feel free to open an [issue](https://github.com/justsomescripts/ansible-homelab/issues) or a [pull request](https://github.com/justsomescripts/ansible-homelab/pulls)
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-## 📜 License
-
-Distributed under the *GNU GENERAL PUBLIC LICENSE*. See [`LICENSE`](LICENSE) for more information.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 ## 📬 Contact
 
 David Gries - [@dgries](https://www.linkedin.com/in/dgries/) - mail@dgries.de
