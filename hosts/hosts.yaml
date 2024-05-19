@@ -10,6 +10,7 @@ linux:
     pihole:
     truenas:
     proxmox:
+    ctr:
 
 hardware:
   children:
@@ -24,6 +25,11 @@ proxmox:
 truenas:
   hosts:
     tns.host.dgries.internal:
+
+ctr:
+  hosts:
+    ctr.host.dgries.internal:
+    # ansible_host: 192.168.178.93
 
 pihole:
   hosts:
