@@ -51,7 +51,7 @@ The dataset name has to match the `jailmaker__jail.dataset` variable.
       block:
 
         - name: Setup Jails
-          ansible.builtin.include_role:
+          ansible.builtin.import_role:
             name: jailmaker
           tags:
             - tn_jailmaker
