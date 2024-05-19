@@ -1,0 +1,11 @@
+---
+- name: Configure Interface
+  ansible.builtin.template:
+    src: config.network.j2
+    dest: /etc/systemd/network/{{ network__filename }}
+    mode: "0644"
+    owner: root
+    group: root
+  become: true
+  notify:
+    - Reload networkd

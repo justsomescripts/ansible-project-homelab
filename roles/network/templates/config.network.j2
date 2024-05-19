@@ -1,0 +1,13 @@
+# Managed by Ansible
+
+[Match]
+{{ ('Virtualization' + '=' + network__match.virtualization.type) if network__match.virtualization.enabled else '' }}
+{{ network__match.type }}={{ network__match.value }}
+
+[Network]
+DHCP={{ network__network.dhcp }}
+Address={{ network__network.address }}
+Gateway={{ network__network.gateway }}
+LinkLocalAddressing={{ network__network.link_local }}
+LLDP={{ network__network.lldp }}
+EmitLLDP={{ network__network.emit_lldp }}

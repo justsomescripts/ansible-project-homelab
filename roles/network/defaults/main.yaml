@@ -1,0 +1,13 @@
+---
+network__match:
+  type: Name
+  value: eth0
+  virtualization:
+    type: container
+    enabled: false
+
+network__network:
+  dhcp: ipv6
+  link_local: ipv6
+  lldp: 'yes'
+  emit_lldp: customer-bridge
