@@ -42,6 +42,15 @@
   notify:
     - Restart SSHD
 
+- name: Create SSH directory
+  ansible.builtin.file:
+    state: directory
+    path: /home/{{ remote_user__admin.user }}/.ssh/
+    mode: "0755"
+    owner: "{{ remote_user__admin.user }}"
+    group: "{{ remote_user__admin.user }}"
+  when: remote_user__ssh.pubkey_auth_enabled | bool
+
 - name: Add SSH keys to home
   ansible.builtin.copy:
     content: "{{ remote_user__ssh.sshkey }}"
