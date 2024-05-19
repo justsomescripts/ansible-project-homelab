@@ -1,0 +1,40 @@
+---
+- name: Container Host Jail
+  hosts: ctr
+  remote_user: "{{ remote_user__admin.user }}"
+  tasks:
+
+    - name: Configure Linux system
+      tags:
+        - linux_system
+      block:
+
+        - name: Configure network
+          ansible.builtin.import_role:
+            name: network
+
+        - name: Ensure default packages are present
+          ansible.builtin.apt:
+            name: "{{ linux__packages }}"
+            update_cache: true
+          become: true
+          tags:
+            - default_packages
+
+        - name: Configure SSH admin user
+          ansible.builtin.import_role:
+            name: remote_user
+          tags:
+            - remote_user
+
+        - name: Configure Postfix
+          ansible.builtin.import_role:
+            name: postfix
+          tags:
+            - postfix
+
+        - name: Configure automatc updates
+          ansible.builtin.import_role:
+            name: unattended_upgrades
+          tags:
+            - update_configuration
