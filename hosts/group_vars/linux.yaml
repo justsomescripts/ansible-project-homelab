@@ -32,6 +32,28 @@ unattended_upgrades__report:
   verbose: false
   debug: false
 
+unattended_upgrades__autoupgrade:
+  cache: true
+  packages: true
+  days:
+    - Mon
+    - Tue
+    - Wed
+    - Thu
+    - Fri
+    - Sat
+    - Sun
+
+unattended_upgrades__dpkg:
+  autofix_interrupted: true
+  minimal_steps: true
+  install_on_shutdown: false
+  autoremove:
+    kernel: true
+    unused: true
+    new_unused: true
+  allow_downgrade: true
+
 postfix__relay:
   fqdn: smtp.mailbox.org
   port: 465
