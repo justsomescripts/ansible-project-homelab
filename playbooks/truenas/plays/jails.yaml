@@ -16,8 +16,13 @@
             - tn_jailmaker
           vars:
             jailmaker__jail:
-              name: testjail
+              name: container
               dataset: speed
+            jailmaker__mounts:
+              - source: /mnt/speed/jail-data-fast/container
+                destination: /data/fast
+              - source: /mnt/main/jail-data-slow/container
+                destination: /data/slow
             jailmaker__systemd:
               nspawn:
                 user_args:

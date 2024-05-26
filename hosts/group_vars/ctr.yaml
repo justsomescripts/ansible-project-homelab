@@ -25,8 +25,8 @@ network__filename: 80-container-host0.network
 
 remote_user__prompt:
   enabled: true
-  color_code: 32
+  color_code: 33
 
 remote_user__tmux:
   enabled: true
-  color: green
+  color: yellow
