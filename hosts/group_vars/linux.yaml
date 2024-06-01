@@ -12,6 +12,7 @@ linux__packages:
   - vim
   - tmux
   - htop
+  - git
 
 chrony__time:
   ntp_server: 192.168.178.3
