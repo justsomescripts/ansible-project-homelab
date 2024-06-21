@@ -39,9 +39,3 @@
           tags:
             - update_configuration
 
-        # - name: Setup UFW
-
-    - name: Setup container environment
-      tags:
-        - ctr_environment
-      block:
