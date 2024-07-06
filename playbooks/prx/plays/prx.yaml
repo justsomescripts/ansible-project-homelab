@@ -1,6 +1,6 @@
 ---
 - name: Container Host Jail
-  hosts: ctr
+  hosts: prx
   remote_user: "{{ remote_user__admin.user }}"
   tasks:
 
@@ -8,10 +8,6 @@
       tags:
         - linux_system
       block:
-
-        - name: Configure network
-          ansible.builtin.import_role:
-            name: network
 
         - name: Ensure default packages are present
           ansible.builtin.apt:

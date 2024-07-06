@@ -2,7 +2,7 @@
 # Initial setup configuration
 linux__init:
   ansible_ssh_pass: "{{ lookup('community.general.bitwarden', 'Hetzner Proxy', field='password')[0] }}"
-  ansible_port: "22"
+  ansible_port: "1337"
 
 # System configuration
 ansible_become_pass: "{{ lookup('community.general.bitwarden', 'Hetzner Proxy', field='password')[0] }}"
