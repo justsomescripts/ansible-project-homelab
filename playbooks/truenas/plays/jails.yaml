@@ -39,6 +39,7 @@
                   - network-bridge=br1
                   - resolv-conf=bind-host
                   - system-call-filter='add_key keyctl bpf'
+                  - capability=CAP_IPC_LOCK
                 default_args:
                   - keep-unit
                   - quiet
