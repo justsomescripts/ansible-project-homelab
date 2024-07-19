@@ -19,10 +19,20 @@
               name: container
               dataset: speed
             jailmaker__mounts:
-              - source: /mnt/speed/jail-data-fast/container
-                destination: /data/fast
-              - source: /mnt/main/jail-data-slow/container
-                destination: /data/slow
+              - source: /mnt/speed/jail-data-fast/container/nextcloud
+                destination: /data/fast/nextcloud
+              - source: /mnt/speed/jail-data-fast/container/paperless
+                destination: /data/fast/paperless
+              - source: /mnt/speed/jail-data-fast/container/traefik
+                destination: /data/fast/traefik
+              - source: /mnt/speed/jail-data-fast/container/vaultwarden
+                destination: /data/fast/vaultwarden
+              - source: /mnt/main/jail-data-slow/container/nextcloud
+                destination: /data/slow/nextcloud
+              - source: /mnt/main/jail-data-slow/container/system/docker
+                destination: /etc/docker
+              - source: /mnt/main/jail-data-slow/container/system/wireguard
+                destination: /etc/wireguard
             jailmaker__systemd:
               nspawn:
                 user_args:
