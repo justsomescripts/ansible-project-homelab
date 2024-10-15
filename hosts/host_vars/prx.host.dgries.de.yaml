@@ -25,18 +25,3 @@ remote_user__ssh:
   agent_auth:
     enabled: true
     authorized_keys_dir: /etc/ssh/sudo_authorized_keys
-
-network__match:
-  type: Name
-  value: host0
-  virtualization:
-    type: container
-    enabled: true
-
-network__network:
-  address: 192.168.178.15/24
-  gateway: 192.168.178.1
-  dhcp: ipv6
-  link_local: ipv6
-  lldp: 'yes'
-  emit_lldp: customer-bridge

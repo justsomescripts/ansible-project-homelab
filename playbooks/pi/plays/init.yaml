@@ -1,0 +1,27 @@
+---
+# Initialize new Container instance using root user (idempotent)
+
+- name: Proxmox Virtual Environment
+  hosts: ctr
+  remote_user: "{{ remote_user__admin.user }}"
+  vars:
+    ansible_port: "{{ linux__init.ansible_port }}"
+    ansible_ssh_pass: "{{ linux__init.ansible_ssh_pass }}"
+
+  tasks:
+
+    - name: Configure network
+      ansible.builtin.import_role:
+        name: network
+
+    - name: Upgrade packages
+      ansible.builtin.import_role:
+        name: apt_upgrade
+
+    - name: Configure SSH admin user
+      ansible.builtin.import_role:
+        name: remote_user
+
+    - name: Reboot Jail
+      ansible.builtin.reboot:
+      become: true

@@ -1,0 +1,32 @@
+---
+# System maintenance
+apt_upgrade__update:
+  type: dist
+  refresh_cache: true
+  force_apt_get: true
+
+unattended_upgrades__packages:
+  origins:
+    - origin: Debian
+      codename: ${distro_codename}
+      label: Debian
+    - origin: Debian
+      codename: ${distro_codename}
+      label: Debian-Security
+    - origin: Debian
+      codename: ${distro_codename}-security
+      label: Debian-Security
+    - origin: Debian
+      codename: ${distro_codename}-updates
+      label: false
+  blacklist: []
+
+network__filename: 80-container-host0.network
+
+remote_user__prompt:
+  enabled: true
+  color_code: 33
+
+remote_user__tmux:
+  enabled: true
+  color: yellow

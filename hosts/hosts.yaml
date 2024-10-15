@@ -1,9 +1,10 @@
 ---
 internal:
   children:
-    pihole:
     truenas:
     proxmox:
+    ctr:
+    pi:
 
 external:
   children:
@@ -11,17 +12,17 @@ external:
 
 linux:
   children:
-    pihole:
     truenas:
     proxmox:
     ctr:
     prx:
+    pi:
 
 hardware:
   children:
     proxmox:
-    pihole:
     truenas:
+    pi:
 
 proxmox:
   hosts:
@@ -31,7 +32,7 @@ truenas:
   hosts:
     tns.host.dgries.internal:
 
-pihole:
+pi:
   hosts:
     pi.host.dgries.internal:
 
