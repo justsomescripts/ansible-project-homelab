@@ -25,3 +25,7 @@ remote_user__ssh:
   agent_auth:
     enabled: true
     authorized_keys_dir: /etc/ssh/sudo_authorized_keys
+
+jailmaker__os:
+  gpu_passthrough:
+    intel_enabled: true
