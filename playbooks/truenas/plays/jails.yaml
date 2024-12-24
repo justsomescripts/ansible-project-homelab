@@ -27,6 +27,8 @@
                 destination: /etc/docker
               - source: /mnt/speed/jail-data-fast/container/system/resolved.conf.d
                 destination: /etc/systemd/resolved.conf.d
+              - source: /mnt/speed/jail-data-fast/container/system/wireguard
+                destination: /etc/wireguard
             jailmaker__systemd:
               nspawn:
                 user_args:
