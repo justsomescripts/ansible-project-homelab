@@ -1,0 +1,48 @@
+---
+all:
+  vars:
+    ansible_user: admin
+    ansible_port: 1337
+    ansible_become: true
+    ansible_python_interpreter: /usr/bin/python3
+    ansible_ssh_common_args: -o ForwardAgent=yes
+
+    admin_user: admin
+    ssh_port: 1337
+    ssh_hardening_enabled: true
+    ssh_agent_auth_enabled: true
+    bitwarden_ssh_public_key_item: Proxmox VE
+    bitwarden_ssh_public_key_field: SSH Public Key
+    bitwarden_admin_password_item: Proxmox VE
+    bitwarden_admin_password_field: password
+    bitwarden_ups_password_item: Proxmox VE
+    bitwarden_ups_password_field: UPS Password
+    bitwarden_mail_item: Infrastructure Mail
+    bitwarden_mail_username_field: username
+    bitwarden_mail_password_field: password
+    alert_email: infra@dgries.de
+    mail_sender: infra@dgries.de
+    mail_relay_host: smtp.mail.me.com
+    mail_relay_port: 587
+    unattended_upgrades_enabled: true
+    proxmox_admin_realm: pam
+
+  children:
+    physical_hosts:
+      children:
+        proxmox:
+          hosts:
+            pve.host.dgries.internal:
+              zed_notify_verbose: true
+              zed_notify_interval: 3600
+              ups_mode: netclient
+              ups_name: Eaton3S
+              ups_remote_host: tns.host.dgries.internal
+              ups_remote_port: 3493
+
+    debian_vms:
+      hosts:
+        ctr.host.dgries.internal: {}
+
+# Bootstrap example (test admin before running normally with hardening enabled):
+# ansible-playbook -i inventory.yaml setup.yml --limit pve.host.dgries.internal -k -e ansible_user=root -e ansible_port=22 -e ansible_become=false -e ssh_hardening_enabled=false

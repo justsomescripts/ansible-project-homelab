@@ -1,7 +1,0 @@
----
-# Ansible
-ansible_become_pass: "{{ lookup('community.general.bitwarden', 'TrueNAS Scale', field='password')[0] }}"
-
-# Remote user
-remote_user__admin:
-  user: "{{ lookup('community.general.bitwarden', 'TrueNAS Scale', field='username')[0] }}"

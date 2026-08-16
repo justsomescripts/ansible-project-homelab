@@ -1,8 +1,0 @@
----
-- name: Reload Networkd
-  ansible.builtin.service:
-    name: systemd-networkd
-    state: restarted
-  become: true
-  listen:
-    - Reload networkd

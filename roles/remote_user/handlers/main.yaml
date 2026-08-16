@@ -1,8 +1,0 @@
----
-- name: Restart SSHD after initialization
-  ansible.builtin.service:
-    name: sshd
-    state: restarted
-  become: true
-  listen:
-    - Restart SSHD

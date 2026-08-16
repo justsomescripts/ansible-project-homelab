@@ -1,0 +1,791 @@
+---
+# Simple homelab setup after the first OS install.
+#
+# Bootstrap connects as root on port 22 without hardening SSH:
+#   ansible-playbook -i inventory.yaml setup.yml --limit pve.host.dgries.internal -k -e ansible_user=root -e ansible_port=22 -e ansible_become=false -e ssh_hardening_enabled=false
+# After testing admin on port 22, run the hardening pass:
+#   ansible-playbook -i inventory.yaml setup.yml --limit pve.host.dgries.internal -e ansible_port=22
+#
+# Later runs should use the admin user and the configured custom SSH port:
+#   ansible-playbook -i inventory.yaml setup.yml
+
+- name: Configure Debian baseline
+  hosts: all
+  become: true
+
+  vars:
+    homelab_admin_user: "{{ admin_user | default('admin') }}"
+    homelab_admin_groups: "{{ admin_groups | default(['sudo']) }}"
+    homelab_ssh_port: "{{ ssh_port | default(1337) }}"
+    homelab_ssh_hardening_enabled: "{{ ssh_hardening_enabled | default(true) }}"
+    homelab_ssh_agent_auth_enabled: "{{ ssh_agent_auth_enabled | default(true) }}"
+    homelab_default_packages: "{{ default_packages | default(['vim', 'tmux', 'htop', 'git', 'curl']) }}"
+    homelab_upgrade_packages: "{{ upgrade_packages | default(true) }}"
+    homelab_unattended_upgrades_enabled: "{{ unattended_upgrades_enabled | default(true) }}"
+    homelab_alert_email: "{{ alert_email | default('infra@dgries.de') }}"
+    homelab_mail_sender: "{{ mail_sender | default(homelab_alert_email) }}"
+    homelab_mail_relay_host: "{{ mail_relay_host | default('smtp.mail.me.com') }}"
+    homelab_mail_relay_port: "{{ mail_relay_port | default(587) }}"
+    homelab_zed_notify_verbose: "{{ zed_notify_verbose | default(true) }}"
+    homelab_zed_notify_interval: "{{ zed_notify_interval | default(3600) }}"
+    homelab_ups_enabled: "{{ ups_enabled | default('physical_hosts' in group_names) }}"
+    homelab_ups_mode: "{{ ups_mode | default('standalone') }}"
+    homelab_ups_name: "{{ ups_name | default('Eaton3S') }}"
+    homelab_ups_driver: "{{ ups_driver | default('usbhid-ups') }}"
+    homelab_ups_port: "{{ ups_port | default('auto') }}"
+    homelab_ups_user: "{{ ups_user | default('upsmon') }}"
+    homelab_ups_remote_host: "{{ ups_remote_host | default('') }}"
+    homelab_ups_remote_port: "{{ ups_remote_port | default(3493) }}"
+    homelab_ups_monitor_host: "{{ homelab_ups_remote_host if homelab_ups_mode == 'netclient' else 'localhost' }}"
+    homelab_ups_monitor_role: "{{ 'secondary' if homelab_ups_mode == 'netclient' else 'primary' }}"
+    homelab_ups_services: "{{ ['nut-client'] if homelab_ups_mode == 'netclient' else ['nut-server', 'nut-client', 'nut-driver@' ~ homelab_ups_name] }}"
+    homelab_proxmox_use_no_subscription_repo: "{{ proxmox_use_no_subscription_repo | default(true) }}"
+    homelab_proxmox_disable_enterprise_repo: "{{ proxmox_disable_enterprise_repo | default(true) }}"
+    homelab_proxmox_admin_realm: "{{ proxmox_admin_realm | default('pam') }}"
+
+  tasks:
+    - name: Verify this is a Debian-family host
+      ansible.builtin.assert:
+        that: ansible_facts['os_family'] == 'Debian'
+        fail_msg: "This baseline supports Debian and Proxmox hosts only."
+
+    - name: Refuse to run until Bitwarden SSH key lookup is configured
+      ansible.builtin.assert:
+        that:
+          - bitwarden_ssh_public_key_item is defined
+          - bitwarden_ssh_public_key_field is defined
+        fail_msg: "Set bitwarden_ssh_public_key_item and bitwarden_ssh_public_key_field in inventory.yaml."
+
+    - name: Refuse to configure UPS until Bitwarden password lookup is configured
+      ansible.builtin.assert:
+        that:
+          - bitwarden_ups_password_item is defined
+          - bitwarden_ups_password_field is defined
+          - homelab_ups_mode in ['standalone', 'netclient']
+          - homelab_ups_mode != 'netclient' or homelab_ups_remote_host | length > 0
+        fail_msg: "Configure the UPS mode, remote host, and Bitwarden password fields in inventory.yaml."
+      when: homelab_ups_enabled | bool
+
+    - name: Refuse to configure mail until Bitwarden login is configured
+      ansible.builtin.assert:
+        that:
+          - bitwarden_mail_item is defined
+          - bitwarden_mail_username_field is defined
+          - bitwarden_mail_password_field is defined
+        fail_msg: "Set the Bitwarden mail item and fields in inventory.yaml."
+
+    - name: Refuse to configure admin until Bitwarden password lookup is configured
+      ansible.builtin.assert:
+        that:
+          - bitwarden_admin_password_item is defined
+          - bitwarden_admin_password_field is defined
+        fail_msg: "Set the admin Bitwarden password item and field in inventory.yaml."
+
+    - name: Read admin SSH public key from Bitwarden
+      ansible.builtin.set_fact:
+        homelab_ssh_public_key: >-
+          {{ lookup('community.general.bitwarden', bitwarden_ssh_public_key_item,
+                    field=bitwarden_ssh_public_key_field, result_count=1) | first }}
+
+    - name: Read UPS monitor password from Bitwarden
+      ansible.builtin.set_fact:
+        homelab_ups_password: >-
+          {{ lookup('community.general.bitwarden', bitwarden_ups_password_item,
+                    field=bitwarden_ups_password_field, result_count=1) | first }}
+      no_log: true
+      when: homelab_ups_enabled | bool
+
+    - name: Read SMTP login from Bitwarden
+      ansible.builtin.set_fact:
+        homelab_mail_username: >-
+          {{ lookup('community.general.bitwarden', bitwarden_mail_item,
+                    field=bitwarden_mail_username_field, result_count=1) | first }}
+        homelab_mail_password: >-
+          {{ lookup('community.general.bitwarden', bitwarden_mail_item,
+                    field=bitwarden_mail_password_field, result_count=1) | first }}
+      no_log: true
+
+    - name: Read admin password from Bitwarden
+      ansible.builtin.set_fact:
+        homelab_admin_password: >-
+          {{ lookup('community.general.bitwarden', bitwarden_admin_password_item,
+                    field=bitwarden_admin_password_field, result_count=1) | first }}
+      no_log: true
+
+    - name: Refuse to run if Bitwarden did not return a public key
+      ansible.builtin.assert:
+        that:
+          - homelab_ssh_public_key is match('^ssh-[a-z0-9-]+ .+')
+        fail_msg: "Bitwarden field did not look like an SSH public key."
+
+    - name: Refuse to configure UPS if Bitwarden did not return a password
+      ansible.builtin.assert:
+        that:
+          - homelab_ups_password | length > 0
+        fail_msg: "Bitwarden field did not return a UPS password."
+      no_log: true
+      when: homelab_ups_enabled | bool
+
+    - name: Refuse to configure mail if Bitwarden did not return a login
+      ansible.builtin.assert:
+        that:
+          - homelab_mail_username | length > 0
+          - homelab_mail_password | length > 0
+        fail_msg: "Bitwarden did not return the SMTP username and password."
+      no_log: true
+
+    - name: Refuse to configure admin if Bitwarden did not return a password
+      ansible.builtin.assert:
+        that: homelab_admin_password | length > 0
+        fail_msg: "Bitwarden did not return the admin password."
+      no_log: true
+
+    - name: Disable Proxmox enterprise repositories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /etc/apt/sources.list.d/pve-enterprise.list
+        - /etc/apt/sources.list.d/pve-enterprise.sources
+      when:
+        - "'proxmox' in group_names"
+        - homelab_proxmox_disable_enterprise_repo | bool
+
+    - name: Disable Ceph enterprise repositories if present
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /etc/apt/sources.list.d/ceph.list
+        - /etc/apt/sources.list.d/ceph.sources
+      when:
+        - "'proxmox' in group_names"
+        - homelab_proxmox_disable_enterprise_repo | bool
+
+    - name: Remove old Proxmox no-subscription repository file
+      ansible.builtin.file:
+        path: /etc/apt/sources.list.d/pve-no-subscription.list
+        state: absent
+      when: "'proxmox' in group_names"
+
+    - name: Enable Proxmox no-subscription repo
+      ansible.builtin.copy:
+        content: |
+          Types: deb
+          URIs: http://download.proxmox.com/debian/pve
+          Suites: {{ ansible_facts['distribution_release'] }}
+          Components: pve-no-subscription
+          Signed-By: /usr/share/keyrings/proxmox-archive-keyring.gpg
+        dest: /etc/apt/sources.list.d/proxmox.sources
+        owner: root
+        group: root
+        mode: "0644"
+      when:
+        - "'proxmox' in group_names"
+        - homelab_proxmox_use_no_subscription_repo | bool
+
+    - name: Preconfigure Postfix for unattended installation
+      ansible.builtin.debconf:
+        name: postfix
+        question: "{{ item.question }}"
+        value: "{{ item.value }}"
+        vtype: "{{ item.vtype }}"
+      loop:
+        - question: postfix/main_mailer_type
+          value: Satellite system
+          vtype: select
+        - question: postfix/mailname
+          value: "{{ ansible_facts['fqdn'] }}"
+          vtype: string
+
+    - name: Install base packages and local mail relay
+      ansible.builtin.apt:
+        name: "{{ homelab_default_packages + ['sudo', 'chrony', 'unattended-upgrades', 'needrestart', 'postfix', 'libsasl2-modules', 'bsd-mailx', 'openssl', 'ca-certificates'] }}"
+        update_cache: true
+
+    - name: Configure needrestart to restart services automatically
+      ansible.builtin.copy:
+        content: |
+          # Managed by Ansible
+          $nrconf{restart} = 'a';
+        dest: /etc/needrestart/conf.d/99-homelab.conf
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Collect installed package information
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Install ZED when ZFS is installed
+      ansible.builtin.apt:
+        name: zfs-zed
+        state: present
+      when: "'zfsutils-linux' in ansible_facts.packages or 'zfs-zed' in ansible_facts.packages"
+
+    - name: Install NUT client for a remote UPS
+      ansible.builtin.apt:
+        name: nut-client
+        state: present
+      when:
+        - homelab_ups_enabled | bool
+        - homelab_ups_mode == 'netclient'
+
+    - name: Remove local NUT server from remote clients
+      ansible.builtin.apt:
+        name:
+          - nut
+          - nut-server
+        state: absent
+      when:
+        - homelab_ups_enabled | bool
+        - homelab_ups_mode == 'netclient'
+
+    - name: Install NUT server for a locally attached UPS
+      ansible.builtin.apt:
+        name: nut
+        state: present
+      when:
+        - homelab_ups_enabled | bool
+        - homelab_ups_mode == 'standalone'
+
+    - name: Upgrade installed packages
+      ansible.builtin.apt:
+        upgrade: dist
+      when: homelab_upgrade_packages | bool
+
+    - name: Generate stable admin password hash
+      ansible.builtin.command:
+        argv:
+          - openssl
+          - passwd
+          - -6
+          - -salt
+          - "{{ (inventory_hostname | hash('sha1'))[:16] }}"
+          - -stdin
+        stdin: "{{ homelab_admin_password }}"
+      register: homelab_admin_password_hash
+      changed_when: false
+      no_log: true
+
+    - name: Create admin user
+      ansible.builtin.user:
+        name: "{{ homelab_admin_user }}"
+        groups: "{{ homelab_admin_groups }}"
+        append: true
+        shell: /bin/bash
+        create_home: true
+        password: "{{ homelab_admin_password_hash.stdout }}"
+        update_password: always
+      no_log: true
+
+    - name: Create SSH directory for admin user
+      ansible.builtin.file:
+        path: "/home/{{ homelab_admin_user }}/.ssh"
+        state: directory
+        owner: "{{ homelab_admin_user }}"
+        group: "{{ homelab_admin_user }}"
+        mode: "0700"
+
+    - name: Install admin SSH key
+      ansible.builtin.copy:
+        content: "{{ homelab_ssh_public_key }}\n"
+        dest: "/home/{{ homelab_admin_user }}/.ssh/authorized_keys"
+        owner: "{{ homelab_admin_user }}"
+        group: "{{ homelab_admin_user }}"
+        mode: "0600"
+
+    - name: Install PAM support for SSH agent authentication
+      ansible.builtin.apt:
+        name: libpam-ssh-agent-auth
+        state: present
+      when: homelab_ssh_agent_auth_enabled | bool
+
+    - name: Authorize admin SSH key for PAM sudo
+      ansible.builtin.copy:
+        content: "{{ homelab_ssh_public_key }}\n"
+        dest: /etc/ssh/sudo_authorized_keys
+        owner: root
+        group: root
+        mode: "0600"
+      when: homelab_ssh_agent_auth_enabled | bool
+
+    - name: Preserve forwarded SSH agent for sudo
+      ansible.builtin.copy:
+        content: |
+          # Managed by Ansible
+          Defaults env_keep += "SSH_AUTH_SOCK"
+        dest: /etc/sudoers.d/ssh_agent_auth
+        owner: root
+        group: root
+        mode: "0440"
+        validate: "visudo -cf %s"
+      when: homelab_ssh_agent_auth_enabled | bool
+
+    - name: Enable SSH agent authentication for sudo
+      ansible.builtin.lineinfile:
+        path: /etc/pam.d/sudo
+        regexp: '^auth\s+.*pam_ssh_agent_auth\.so\s+'
+        line: auth sufficient pam_ssh_agent_auth.so file=/etc/ssh/sudo_authorized_keys
+        insertbefore: '^@include common-auth$'
+      when: homelab_ssh_agent_auth_enabled | bool
+
+    - name: Check for separate sudo-i PAM configuration
+      ansible.builtin.stat:
+        path: /etc/pam.d/sudo-i
+      register: homelab_sudo_i_pam
+      when: homelab_ssh_agent_auth_enabled | bool
+
+    - name: Enable SSH agent authentication for sudo-i
+      ansible.builtin.lineinfile:
+        path: /etc/pam.d/sudo-i
+        regexp: '^auth\s+.*pam_ssh_agent_auth\.so\s+'
+        line: auth sufficient pam_ssh_agent_auth.so file=/etc/ssh/sudo_authorized_keys
+        insertbefore: '^@include common-auth$'
+      when:
+        - homelab_ssh_agent_auth_enabled | bool
+        - homelab_sudo_i_pam.stat.exists
+
+    - name: Require authentication when admin uses sudo
+      ansible.builtin.copy:
+        content: "{{ homelab_admin_user }} ALL=(ALL:ALL) ALL\n"
+        dest: "/etc/sudoers.d/{{ homelab_admin_user }}"
+        owner: root
+        group: root
+        mode: "0440"
+        validate: "visudo -cf %s"
+
+    - name: Read Proxmox users
+      ansible.builtin.command:
+        argv:
+          - pveum
+          - user
+          - list
+          - --output-format
+          - json
+      register: homelab_proxmox_users
+      changed_when: false
+      when: "'proxmox' in group_names"
+
+    - name: Add PAM admin user to Proxmox user database
+      ansible.builtin.command:
+        argv:
+          - pveum
+          - user
+          - add
+          - "{{ homelab_admin_user }}@{{ homelab_proxmox_admin_realm }}"
+          - --enable
+          - "1"
+          - --email
+          - "{{ homelab_alert_email }}"
+      when:
+        - "'proxmox' in group_names"
+        - "(homelab_admin_user ~ '@' ~ homelab_proxmox_admin_realm) not in (homelab_proxmox_users.stdout | from_json | map(attribute='userid') | list)"
+
+    - name: Configure Proxmox admin user
+      ansible.builtin.command:
+        argv:
+          - pveum
+          - user
+          - modify
+          - "{{ homelab_admin_user }}@{{ homelab_proxmox_admin_realm }}"
+          - --enable
+          - "1"
+          - --email
+          - "{{ homelab_alert_email }}"
+      changed_when: false
+      when: "'proxmox' in group_names"
+
+    - name: Give admin user Proxmox administrator permissions
+      ansible.builtin.command:
+        argv:
+          - pveum
+          - aclmod
+          - /
+          - -user
+          - "{{ homelab_admin_user }}@{{ homelab_proxmox_admin_realm }}"
+          - -role
+          - Administrator
+      changed_when: false
+      when: "'proxmox' in group_names"
+
+    - name: Remove old custom Chrony time source
+      ansible.builtin.file:
+        dest: /etc/chrony/sources.d/homelab.sources
+        state: absent
+      notify: Restart Chrony
+
+    - name: Ensure Chrony is running
+      ansible.builtin.service:
+        name: chrony
+        state: started
+        enabled: true
+
+    - name: Configure Postfix relay
+      ansible.builtin.copy:
+        content: |
+          # Managed by Ansible
+          myhostname = {{ ansible_facts['fqdn'] }}
+          mydestination = $myhostname, localhost.$mydomain, localhost
+          mynetworks = 127.0.0.0/8
+          inet_interfaces = loopback-only
+          recipient_delimiter = +
+          compatibility_level = 2
+          biff = no
+          append_dot_mydomain = no
+
+          relayhost = [{{ homelab_mail_relay_host }}]:{{ homelab_mail_relay_port }}
+          sender_canonical_maps = static:{{ homelab_mail_sender }}
+
+          smtp_use_tls = yes
+          smtp_tls_security_level = encrypt
+          smtp_tls_wrappermode = no
+          smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
+          smtp_sasl_auth_enable = yes
+          smtp_sasl_password_maps = hash:/etc/postfix/smtp_credentials
+          smtp_sasl_security_options = noanonymous
+
+          alias_maps = hash:/etc/aliases
+          alias_database = hash:/etc/aliases
+        dest: /etc/postfix/main.cf
+        owner: root
+        group: root
+        mode: "0644"
+      notify: Restart Postfix
+
+    - name: Configure SMTP credentials
+      ansible.builtin.copy:
+        content: "[{{ homelab_mail_relay_host }}]:{{ homelab_mail_relay_port }} {{ homelab_mail_username }}:{{ homelab_mail_password }}\n"
+        dest: /etc/postfix/smtp_credentials
+        owner: root
+        group: root
+        mode: "0600"
+      no_log: true
+      register: homelab_smtp_credentials_file
+
+    - name: Build SMTP credentials map
+      ansible.builtin.command: postmap /etc/postfix/smtp_credentials
+      changed_when: homelab_smtp_credentials_file.changed
+      notify: Restart Postfix
+
+    - name: Forward system mail to infrastructure mailbox
+      ansible.builtin.lineinfile:
+        path: /etc/aliases
+        regexp: '^root:'
+        line: "root: {{ homelab_alert_email }}"
+        create: true
+        owner: root
+        group: root
+        mode: "0644"
+      register: homelab_mail_aliases_file
+
+    - name: Build mail aliases database
+      ansible.builtin.command: newaliases
+      changed_when: homelab_mail_aliases_file.changed
+      notify: Restart Postfix
+
+    - name: Ensure Postfix is running
+      ansible.builtin.service:
+        name: postfix
+        state: started
+        enabled: true
+
+    - name: Configure unattended upgrades
+      ansible.builtin.copy:
+        content: |
+          // Managed by Ansible
+
+          #clear Unattended-Upgrade::Origins-Pattern;
+          Unattended-Upgrade::Origins-Pattern {
+              "origin=Debian,codename=${distro_codename},label=Debian";
+              "origin=Debian,codename=${distro_codename},label=Debian-Security";
+              "origin=Debian,codename=${distro_codename}-security,label=Debian-Security";
+              "origin=Debian,codename=${distro_codename}-updates";
+          {% if 'proxmox' in group_names %}
+              "origin=Proxmox,codename=${distro_codename},label=Proxmox Debian Repository";
+          {% endif %}
+          };
+
+          Unattended-Upgrade::AutoFixInterruptedDpkg "true";
+          Unattended-Upgrade::MinimalSteps "true";
+          Unattended-Upgrade::InstallOnShutdown "false";
+          Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";
+          Unattended-Upgrade::Remove-New-Unused-Dependencies "true";
+          Unattended-Upgrade::Remove-Unused-Dependencies "true";
+          Unattended-Upgrade::Automatic-Reboot "false";
+          Unattended-Upgrade::Mail "{{ homelab_alert_email }}";
+          Unattended-Upgrade::Sender "{{ homelab_mail_sender }}";
+          Unattended-Upgrade::MailReport "on-change";
+          Unattended-Upgrade::SyslogEnable "true";
+          Unattended-Upgrade::SyslogFacility "daemon";
+        dest: /etc/apt/apt.conf.d/52homelab-unattended-upgrades
+        owner: root
+        group: root
+        mode: "0644"
+      when: homelab_unattended_upgrades_enabled | bool
+
+    - name: Configure unattended upgrades schedule
+      ansible.builtin.copy:
+        content: |
+          // Managed by Ansible
+          APT::Periodic::Update-Package-Lists "{{ '1' if homelab_unattended_upgrades_enabled | bool else '0' }}";
+          APT::Periodic::Unattended-Upgrade "{{ '1' if homelab_unattended_upgrades_enabled | bool else '0' }}";
+          APT::Periodic::AutocleanInterval "7";
+        dest: /etc/apt/apt.conf.d/20auto-upgrades
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Configure ZED
+      ansible.builtin.copy:
+        content: |
+          # Managed by Ansible
+
+          ZED_EMAIL_ADDR="{{ homelab_alert_email }}"
+          ZED_EMAIL_PROG="mail"
+          ZED_EMAIL_OPTS="-s '@SUBJECT@' @ADDRESS@"
+
+          ZED_NOTIFY_INTERVAL_SECS={{ homelab_zed_notify_interval }}
+          ZED_NOTIFY_VERBOSE={{ '1' if homelab_zed_notify_verbose | bool else '0' }}
+          ZED_NOTIFY_DATA=1
+
+          ZED_USE_ENCLOSURE_LEDS=1
+          ZED_SCRUB_AFTER_RESILVER=
+
+          # Keep noisy history events out of syslog.
+          ZED_SYSLOG_SUBCLASS_EXCLUDE="history_event"
+          ZED_SYSLOG_DISPLAY_GUIDS=0
+        dest: /etc/zfs/zed.d/zed.rc
+        owner: root
+        group: root
+        mode: "0644"
+      notify: Restart ZED
+      when: "'zfsutils-linux' in ansible_facts.packages or 'zfs-zed' in ansible_facts.packages"
+
+    - name: Ensure ZED is running when ZFS is installed
+      ansible.builtin.service:
+        name: zfs-zed
+        state: started
+        enabled: true
+      when: "'zfsutils-linux' in ansible_facts.packages or 'zfs-zed' in ansible_facts.packages"
+
+    - name: Configure NUT mode
+      ansible.builtin.copy:
+        content: |
+          # Managed by Ansible
+          MODE={{ homelab_ups_mode }}
+        dest: /etc/nut/nut.conf
+        owner: root
+        group: nut
+        mode: "0640"
+      notify: Restart NUT
+      when: homelab_ups_enabled | bool
+
+    - name: Configure UPS driver
+      ansible.builtin.copy:
+        content: |
+          # Managed by Ansible
+
+          maxretry = 3
+
+          [{{ homelab_ups_name }}]
+              driver = {{ homelab_ups_driver }}
+              port = {{ homelab_ups_port }}
+        dest: /etc/nut/ups.conf
+        owner: root
+        group: nut
+        mode: "0640"
+      notify: Restart NUT
+      when:
+        - homelab_ups_enabled | bool
+        - homelab_ups_mode == 'standalone'
+
+    - name: Configure UPS daemon users
+      ansible.builtin.copy:
+        content: |
+          # Managed by Ansible
+
+          [{{ homelab_ups_user }}]
+              password = {{ homelab_ups_password }}
+              upsmon primary
+              actions = SET
+              instcmds = ALL
+        dest: /etc/nut/upsd.users
+        owner: root
+        group: nut
+        mode: "0640"
+      notify: Restart NUT
+      no_log: true
+      when:
+        - homelab_ups_enabled | bool
+        - homelab_ups_mode == 'standalone'
+
+    - name: List UPS identifiers exposed by TrueNAS
+      ansible.builtin.command:
+        argv:
+          - timeout
+          - "10"
+          - upsc
+          - -l
+          - "{{ homelab_ups_remote_host }}:{{ homelab_ups_remote_port }}"
+      register: homelab_remote_ups_list
+      changed_when: false
+      failed_when: false
+      when:
+        - homelab_ups_enabled | bool
+        - homelab_ups_mode == 'netclient'
+        - not ansible_check_mode
+
+    - name: Verify configured UPS identifier is exposed by TrueNAS
+      ansible.builtin.assert:
+        that:
+          - homelab_remote_ups_list.rc == 0
+          - homelab_ups_name in homelab_remote_ups_list.stdout_lines
+        fail_msg: >-
+          TrueNAS at {{ homelab_ups_remote_host }}:{{ homelab_ups_remote_port }}
+          does not expose an UPS named {{ homelab_ups_name }}.
+          Exported identifiers: {{ homelab_remote_ups_list.stdout_lines | default([]) | join(', ') | default('none', true) }}.
+          Set ups_name to one of those identifiers, or change the TrueNAS UPS identifier and restart its UPS service.
+          NUT error: {{ homelab_remote_ups_list.stderr | default('none') }}
+      when:
+        - homelab_ups_enabled | bool
+        - homelab_ups_mode == 'netclient'
+        - not ansible_check_mode
+
+    - name: Configure UPS monitor
+      ansible.builtin.copy:
+        content: |
+          # Managed by Ansible
+
+          MINSUPPLIES 1
+          SHUTDOWNCMD "/sbin/shutdown -h +0"
+          POLLFREQ 5
+          POLLFREQALERT 5
+          HOSTSYNC 15
+          DEADTIME 15
+          POWERDOWNFLAG /etc/killpower
+          RBWARNTIME 43200
+          NOCOMMWARNTIME 300
+          FINALDELAY 5
+          MONITOR {{ homelab_ups_name }}@{{ homelab_ups_monitor_host }}:{{ homelab_ups_remote_port }} 1 {{ homelab_ups_user }} {{ homelab_ups_password }} {{ homelab_ups_monitor_role }}
+          NOTIFYCMD /usr/local/sbin/nut-mail-notify
+          NOTIFYFLAG ONLINE SYSLOG+EXEC
+          NOTIFYFLAG ONBATT SYSLOG+WALL+EXEC
+          NOTIFYFLAG LOWBATT SYSLOG+WALL+EXEC
+          NOTIFYFLAG FSD SYSLOG+WALL+EXEC
+          NOTIFYFLAG COMMOK SYSLOG+EXEC
+          NOTIFYFLAG COMMBAD SYSLOG+EXEC
+          NOTIFYFLAG SHUTDOWN SYSLOG+WALL+EXEC
+          NOTIFYFLAG REPLBATT SYSLOG+EXEC
+          NOTIFYFLAG NOCOMM SYSLOG+EXEC
+        dest: /etc/nut/upsmon.conf
+        owner: root
+        group: nut
+        mode: "0640"
+      notify: Restart NUT
+      no_log: true
+      when: homelab_ups_enabled | bool
+
+    - name: Install UPS email notifier
+      ansible.builtin.copy:
+        content: |
+          #!/bin/sh
+          subject="UPS ${NOTIFYTYPE:-event} on ${UPSNAME:-unknown}"
+          printf '%s\n' "$1" | /usr/bin/mail -s "$subject" {{ homelab_alert_email }}
+        dest: /usr/local/sbin/nut-mail-notify
+        owner: root
+        group: root
+        mode: "0755"
+      notify: Restart NUT
+      when: homelab_ups_enabled | bool
+
+    - name: Ensure NUT services are running
+      ansible.builtin.service:
+        name: "{{ item }}"
+        state: started
+        enabled: true
+      loop:
+        "{{ homelab_ups_services }}"
+      when: homelab_ups_enabled | bool
+
+    - name: Remove old SSH hardening drop-in
+      ansible.builtin.file:
+        path: /etc/ssh/sshd_config.d/99-homelab.conf
+        state: absent
+      notify: Restart SSH
+      when: homelab_ssh_hardening_enabled | bool
+
+    - name: Configure hardened SSH daemon
+      ansible.builtin.copy:
+        content: |
+          # Managed by Ansible
+          Port {{ homelab_ssh_port }}
+          PubkeyAuthentication yes
+          AllowAgentForwarding yes
+          PasswordAuthentication no
+          X11Forwarding no
+          PermitRootLogin no
+          AllowUsers {{ homelab_admin_user }}
+        dest: /etc/ssh/sshd_config.d/00-homelab.conf
+        owner: root
+        group: root
+        mode: "0644"
+      notify: Restart SSH
+      when: homelab_ssh_hardening_enabled | bool
+
+    - name: Check SSH configuration
+      ansible.builtin.command: /usr/sbin/sshd -t
+      changed_when: false
+
+    - name: Read effective SSH configuration
+      ansible.builtin.command: /usr/sbin/sshd -T
+      register: homelab_sshd_effective
+      changed_when: false
+      when: homelab_ssh_hardening_enabled | bool
+
+    - name: Verify effective SSH hardening
+      ansible.builtin.assert:
+        that:
+          - "('port ' ~ homelab_ssh_port) in homelab_sshd_effective.stdout_lines"
+          - "'passwordauthentication no' in homelab_sshd_effective.stdout_lines"
+          - "'permitrootlogin no' in homelab_sshd_effective.stdout_lines"
+          - "('allowusers ' ~ homelab_admin_user) in homelab_sshd_effective.stdout_lines"
+        fail_msg: "The effective SSH configuration does not match the requested hardening. Root remains unlocked."
+      when: homelab_ssh_hardening_enabled | bool
+
+    - name: Lock the root password after SSH validation
+      ansible.builtin.user:
+        name: root
+        password_lock: true
+      when: homelab_ssh_hardening_enabled | bool
+
+    - name: Collect service names
+      ansible.builtin.service_facts:
+
+  handlers:
+    - name: Restart Chrony
+      ansible.builtin.service:
+        name: chrony
+        state: restarted
+
+    - name: Restart ZED
+      ansible.builtin.service:
+        name: zfs-zed
+        state: restarted
+
+    - name: Restart NUT
+      ansible.builtin.service:
+        name: "{{ item }}"
+        state: restarted
+      loop:
+        "{{ homelab_ups_services }}"
+
+    - name: Restart Postfix
+      ansible.builtin.service:
+        name: postfix
+        state: restarted
+
+    - name: Restart SSH
+      ansible.builtin.service:
+        name: "{{ 'ssh.service' if 'ssh.service' in ansible_facts.services else 'sshd.service' }}"
+        state: restarted
