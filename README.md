@@ -164,6 +164,7 @@ Create `inventory.yaml` from the example and confirm these Bitwarden fields:
 
 - `Proxmox VE` / `SSH Public Key`: public key for the Linux `admin` account
 - `Proxmox VE` / `password`: PAM password for the Linux and Proxmox `admin` account
+- `CTR` / `password`: separate Linux `admin` password for `ctr.host.dgries.internal`
 - `Proxmox VE` / `UPS Password`: TrueNAS NUT monitor password
 - `Infrastructure Mail` / `username`: full iCloud Mail login address
 - `Infrastructure Mail` / `password`: Apple app-specific password

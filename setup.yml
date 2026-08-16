@@ -346,14 +346,88 @@
         - homelab_ssh_agent_auth_enabled | bool
         - homelab_sudo_i_pam.stat.exists
 
+    - name: Remove old passwordless admin sudo rule
+      ansible.builtin.file:
+        path: "/etc/sudoers.d/{{ homelab_admin_user }}"
+        state: absent
+
     - name: Require authentication when admin uses sudo
       ansible.builtin.copy:
         content: "{{ homelab_admin_user }} ALL=(ALL:ALL) ALL\n"
-        dest: "/etc/sudoers.d/{{ homelab_admin_user }}"
+        dest: /etc/sudoers.d/99-homelab-admin
         owner: root
         group: root
         mode: "0440"
         validate: "visudo -cf %s"
+
+    - name: Read authorized SSH key fingerprint for PAM sudo
+      ansible.builtin.command:
+        argv:
+          - ssh-keygen
+          - -lf
+          - /etc/ssh/sudo_authorized_keys
+          - -E
+          - sha256
+      register: homelab_sudo_key_fingerprint
+      changed_when: false
+      when: homelab_ssh_agent_auth_enabled | bool
+
+    - name: List keys available through the forwarded SSH agent
+      ansible.builtin.command: ssh-add -l
+      become: false
+      register: homelab_forwarded_agent_keys
+      changed_when: false
+      failed_when: false
+      when:
+        - homelab_ssh_agent_auth_enabled | bool
+        - ansible_user != 'root'
+
+    - name: Verify PAM sudo key is available through the forwarded agent
+      ansible.builtin.assert:
+        that:
+          - homelab_forwarded_agent_keys.rc == 0
+          - homelab_sudo_key_fingerprint.stdout.split()[1] in homelab_forwarded_agent_keys.stdout
+        fail_msg: >-
+          The forwarded SSH agent does not contain the private key matching
+          {{ homelab_sudo_key_fingerprint.stdout }}.
+          Local agent output as seen by the host:
+          {{ homelab_forwarded_agent_keys.stdout | default(homelab_forwarded_agent_keys.stderr) }}
+      when:
+        - homelab_ssh_agent_auth_enabled | bool
+        - ansible_user != 'root'
+
+    - name: Clear cached sudo authentication
+      ansible.builtin.command: sudo -k
+      become: false
+      changed_when: false
+      when:
+        - homelab_ssh_agent_auth_enabled | bool
+        - ansible_user != 'root'
+
+    - name: Test sudo authentication through the forwarded SSH agent
+      ansible.builtin.command:
+        argv:
+          - sudo
+          - -n
+          - "true"
+      become: false
+      register: homelab_agent_sudo_test
+      changed_when: false
+      failed_when: false
+      when:
+        - homelab_ssh_agent_auth_enabled | bool
+        - ansible_user != 'root'
+
+    - name: Verify sudo accepted SSH agent authentication
+      ansible.builtin.assert:
+        that: homelab_agent_sudo_test.rc == 0
+        fail_msg: >-
+          The matching key is forwarded, but PAM sudo rejected it.
+          Check /etc/pam.d/sudo, /etc/sudoers.d/ssh_agent_auth, and the host authentication log.
+          sudo reported: {{ homelab_agent_sudo_test.stderr }}
+      when:
+        - homelab_ssh_agent_auth_enabled | bool
+        - ansible_user != 'root'
 
     - name: Read Proxmox users
       ansible.builtin.command:
@@ -749,6 +823,7 @@
           - "('port ' ~ homelab_ssh_port) in homelab_sshd_effective.stdout_lines"
           - "'passwordauthentication no' in homelab_sshd_effective.stdout_lines"
           - "'permitrootlogin no' in homelab_sshd_effective.stdout_lines"
+          - "'allowagentforwarding yes' in homelab_sshd_effective.stdout_lines"
           - "('allowusers ' ~ homelab_admin_user) in homelab_sshd_effective.stdout_lines"
         fail_msg: "The effective SSH configuration does not match the requested hardening. Root remains unlocked."
       when: homelab_ssh_hardening_enabled | bool

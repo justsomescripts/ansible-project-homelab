@@ -42,7 +42,9 @@ all:
 
     debian_vms:
       hosts:
-        ctr.host.dgries.internal: {}
+        ctr.host.dgries.internal:
+          bitwarden_admin_password_item: CTR
+          bitwarden_admin_password_field: password
 
 # Bootstrap example (test admin before running normally with hardening enabled):
 # ansible-playbook -i inventory.yaml setup.yml --limit pve.host.dgries.internal -k -e ansible_user=root -e ansible_port=22 -e ansible_become=false -e ssh_hardening_enabled=false
