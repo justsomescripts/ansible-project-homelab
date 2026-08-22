@@ -36,14 +36,14 @@ all:
               zed_notify_verbose: true
               zed_notify_interval: 3600
               ups_mode: netclient
-              ups_name: Eaton3S
+              ups_name: eaton
               ups_remote_host: tns.host.dgries.internal
               ups_remote_port: 3493
 
     debian_vms:
       hosts:
         ctr.host.dgries.internal:
-          bitwarden_admin_password_item: CTR
+          bitwarden_admin_password_item: TrueNAS Container
           bitwarden_admin_password_field: password
 
 # Bootstrap example (test admin before running normally with hardening enabled):
